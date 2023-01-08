@@ -1,13 +1,7 @@
 FROM node:14.21.2
-
-WORKDIR /usr/src/app
-
+WORKDIR /usr/app
 COPY package*.json ./
-
 RUN npm install
-
 COPY . .
-
+EXPOSE 8000
 CMD ["node", "run", "build"]
-
-RUN npm start
