@@ -1,5 +1,15 @@
 version: "3.5"
 services:
+  backend:
+    image: pavelg1307/phonestore
+    container_name: phonestore
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    ports:
+      - "3000:3000"
+    networks:
+      - default
   postgres:
     image: postgres:15.1
     container_name: postgres
