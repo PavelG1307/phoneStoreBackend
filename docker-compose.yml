@@ -1,0 +1,37 @@
+version: "3.5"
+services:
+  backend:
+    image: pavelg1307/phonestore
+    container_name: phonestore
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    ports:
+      - "3000:3000"
+    networks:
+      - default
+  postgres:
+    image: postgres:15.1
+    container_name: postgres
+    restart: always
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=testdb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - pointer-external
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+networks:
+  pointer-external:
+    external: false
+    name: pointer-external
+volumes:
+      postgres-vol:
