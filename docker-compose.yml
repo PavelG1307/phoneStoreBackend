@@ -1,0 +1,27 @@
+version: "3.5"
+services:
+  postgres:
+    image: postgres:15.1
+    container_name: postgres
+    restart: always
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=testdb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - pointer-external
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+networks:
+  pointer-external:
+    external: false
+    name: pointer-external
+volumes:
+      postgres-vol:
