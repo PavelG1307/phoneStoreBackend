@@ -4,34 +4,32 @@ import {
   Column,
   DataType,
   UpdatedAt,
-  CreatedAt,
+  CreatedAt
 } from 'sequelize-typescript'
+import { UUID } from './types'
 
 @Table({
-  modelName: 'Options'
+  modelName: 'Categories'
 })
 
-export class Option extends Model<Option> {
+export class Category extends Model<Category> {
   @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    primaryKey: true,
+    unique: true
   })
-  declare id?: number
+  declare uuid?: UUID
 
   @Column({
     type: DataType.TEXT,
   })
   declare name: string
 
-  @Column({ type: DataType.ARRAY(DataType.INTEGER) })
-  declare values: number[]
-
-  @Column({ type: DataType.ARRAY(DataType.INTEGER) })
-  declare variants: number[]
-
-  @Column({ type: DataType.BOOLEAN })
-  declare visible: boolean
+  @Column({
+    type: DataType.UUID,
+  })
+  declare parentUUID?: UUID
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   declare isDeleted?: boolean

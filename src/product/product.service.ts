@@ -1,8 +1,9 @@
-import { Injectable, Query } from "@nestjs/common"
-import { InjectModel } from "@nestjs/sequelize"
-import { Product } from "src/models/product.model"
+import { Injectable } from "@nestjs/common"
+import { getModelToken, InjectModel } from "@nestjs/sequelize"
+import { Category } from "src/models/category.model"
+import { Product } from "../models/product.model"
+import { UUID } from "../models/types"
 import { CreateProductDto } from "./dto/create-product.dto"
-import { Op } from 'sequelize'
 
 @Injectable()
 export class ProductService {
@@ -11,13 +12,19 @@ export class ProductService {
     private readonly productModel: typeof Product
   ) {}
 
-  async get(uuid: uuid) {
-    const products = await Product.findAll({ where: { uuid }})
+  async get(uuid: UUID) {
+    const products = await Product.findOne({ 
+      where: { uuid },
+      include: [Category]
+    })
     return products
   }
 
   async getAll() {
-    const products = Product.findAll({ where: { visible: true }})
+    const products = Product.findAll({ 
+      where: { visible: true },
+      include: [Category]
+    })
     return products
   }
 
@@ -28,7 +35,8 @@ export class ProductService {
     return newProduct
   }
 
-  async update(uuid: string, product: Product) {
+  async update(uuid: string, product: Partial<Product>) {
+    console.log(uuid)
     return Product.update(product, {
       where: { uuid },
       returning: true

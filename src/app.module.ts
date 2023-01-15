@@ -3,10 +3,13 @@ import { ConfigModule } from '@nestjs/config'
 import { SequelizeModule } from '@nestjs/sequelize';
 import { getEnvFilePath } from './core/utils'
 import { Product } from './models/product.model';
-import { Variant } from './models/variant.model';
-import { Option } from './models/option.model';
-import { Value } from './models/value.model';
 import { Order } from './models/order.model';
+import { ProductModule } from './product/product.module';
+import { User } from './models/user.model';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { Category } from './models/category.model';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -20,11 +23,15 @@ import { Order } from './models/order.model';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [Product, Option, Variant, Value, Order],
+      models: [Product, Order, User, Category],
       autoLoadModels: true,
+      synchronize: true,
       logging: process.env.NODE_ENV === 'dev' ? console.log : false
-    })
-  ],
-  controllers: []
+    }),
+    ProductModule,
+    UserModule,
+    AuthModule,
+    CategoryModule
+  ]
 })
 export class AppModule {}

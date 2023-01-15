@@ -10,10 +10,13 @@ import { EXIT_CODES } from './core/constants'
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule)
-    app.useGlobalPipes(new ValidationPipe())
+    app.useGlobalPipes(
+      new ValidationPipe({
+        forbidUnknownValues: false
+      }),
+    )
     app.enableCors(corsOptions)
     app.setGlobalPrefix(process.env.API_PREFIX)
-
     app.use(compression())
     app.use(helmet())
 

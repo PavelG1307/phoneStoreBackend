@@ -6,6 +6,7 @@ import {
   UpdatedAt,
   CreatedAt,
 } from 'sequelize-typescript'
+import { UUID } from './types'
 
 @Table({
   modelName: 'Orders'
@@ -18,7 +19,7 @@ export class Order extends Model<Order> {
     defaultValue: DataType.UUIDV4,
 
   })
-  declare uuid?: uuid
+  declare uuid?: UUID
 
   @Column({
     type: DataType.TEXT,
@@ -41,13 +42,14 @@ export class Order extends Model<Order> {
   declare email: string
 
   @Column({
-    type: DataType.TEXT,
+    type: DataType.ARRAY(DataType.JSON),
   })
   declare products: {
     products_id: number,
-    variant_id: number,
+    variant_id?: number,
     price: number,
     name: string,
+    images: string[],
     count: number
   }[]
 

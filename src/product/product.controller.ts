@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { Product } from 'src/models/product.model';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Product } from '../models/product.model';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
 
@@ -24,7 +24,7 @@ export class ProductController {
   }
 
   @Put(':uuid')
-  async update(@Param('uuid') uuid: string, @Body() product: Product) {
+  async update(@Param('uuid') uuid: string, @Body() product: Partial<Product>) {
     return this.ProductService.update(uuid, product)
   }
 

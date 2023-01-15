@@ -5,7 +5,11 @@ import {
   DataType,
   UpdatedAt,
   CreatedAt,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript'
+import { Category } from './category.model'
+import { UUID, Variant } from './types'
 
 @Table({
   modelName: 'Products'
@@ -18,7 +22,7 @@ export class Product extends Model<Product> {
     primaryKey: true,
     unique: true
   })
-  declare uuid?: uuid
+  declare uuid?: UUID
 
   @Column({
     type: DataType.TEXT,
@@ -28,22 +32,22 @@ export class Product extends Model<Product> {
   @Column({ type: DataType.INTEGER })
   declare price: number
 
-
   @Column({
     type: DataType.INTEGER
   })
-  declare price_old?: number
+  declare priceOld?: number
 
   @Column({ type: DataType.TEXT, defaultValue: '' })
   declare description?: string
-  
+
+  @ForeignKey(() => Category)
   @Column({
     type: DataType.UUID
   })
-  declare category?: uuid
+  declare categoryUUID: UUID
 
   @Column({ type: DataType.BOOLEAN, defaultValue: true })
-  declare visible: boolean
+  declare visible?: boolean
 
   @Column({
     type: DataType.ARRAY(DataType.TEXT),
@@ -52,25 +56,16 @@ export class Product extends Model<Product> {
   declare images?: string[]
 
   @Column({
+    type: DataType.ARRAY(DataType.INTEGER),
+    defaultValue: []
+  })
+  declare optionIds?: number[]
+
+  @Column({
     type: DataType.ARRAY(DataType.JSON),
     defaultValue: []
   })
-  declare options?: {
-    id: number,
-    name: string,
-    values: {
-      id: number,
-      name: string
-    }[],
-    variants: {
-      id: number,
-      images: string[],
-      is_default: boolean,
-      name: string,
-      option_value_id: number
-      optionsInfo: Product
-    }[]
-  }[]
+  declare variants: Variant[]
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   declare isDeleted?: boolean
@@ -82,4 +77,7 @@ export class Product extends Model<Product> {
   @Column({ type: DataType.DATE })
   @UpdatedAt
   declare updatedAt?: Date
+
+  @BelongsTo(() => Category)
+  readonly category: Category
 }
