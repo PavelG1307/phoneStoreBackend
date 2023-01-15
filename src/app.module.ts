@@ -10,6 +10,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { Category } from './models/category.model';
 import { CategoryModule } from './category/category.module';
+import { OrderItem } from './models/orderItem.model';
+import { OrderController } from './order/order.controller';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -23,7 +26,7 @@ import { CategoryModule } from './category/category.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [Product, Order, User, Category],
+      models: [Product, Order, User, Category, OrderItem],
       autoLoadModels: true,
       synchronize: true,
       logging: process.env.NODE_ENV === 'dev' ? console.log : false
@@ -31,7 +34,8 @@ import { CategoryModule } from './category/category.module';
     ProductModule,
     UserModule,
     AuthModule,
-    CategoryModule
+    CategoryModule,
+    OrderModule
   ]
 })
 export class AppModule {}

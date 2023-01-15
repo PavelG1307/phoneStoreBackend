@@ -5,7 +5,9 @@ import {
   DataType,
   UpdatedAt,
   CreatedAt,
+  HasMany,
 } from 'sequelize-typescript'
+import { OrderItem } from './orderItem.model'
 import { UUID } from './types'
 
 @Table({
@@ -16,20 +18,14 @@ export class Order extends Model<Order> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
-    defaultValue: DataType.UUIDV4,
-
+    defaultValue: DataType.UUIDV4
   })
   declare uuid?: UUID
 
   @Column({
     type: DataType.TEXT,
   })
-  declare first_name: string
-
-  @Column({
-    type: DataType.TEXT,
-  })
-  declare last_name: string
+  declare name: string
 
   @Column({
     type: DataType.TEXT,
@@ -41,17 +37,8 @@ export class Order extends Model<Order> {
   })
   declare email: string
 
-  @Column({
-    type: DataType.ARRAY(DataType.JSON),
-  })
-  declare products: {
-    products_id: number,
-    variant_id?: number,
-    price: number,
-    name: string,
-    images: string[],
-    count: number
-  }[]
+  @HasMany(() => OrderItem, 'orderUUID')
+  items: OrderItem[]
 
   @Column({
     type: DataType.INTEGER,
