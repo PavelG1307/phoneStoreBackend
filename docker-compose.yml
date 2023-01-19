@@ -1,15 +1,42 @@
 version: "3.5"
 services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 phonestore phonestorefront
+
   backend:
     image: pavelg1307/phonestore
     container_name: phonestore
     restart: unless-stopped
     environment:
       TZ: "Europe/Moscow"
+      PORT: 3000
+      API_PREFIX: '/api/v1'
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_USER: 'test'
+      DB_PASSWORD: 'password'
+      DB_NAME: 'testdb'
+      SECRET_JWT_KEY: Dsjdsagagfa5Sd4
+      FRONT_URL: '*'
+      NODE_ENV: 'prod'
     ports:
       - "3000:3000"
     networks:
       - default
+
+  frontend:
+    image: pavelg1307/phonestorefront
+    container_name: phonestorefront
+    restart: unless-stopped
+    ports:
+      - "8000:3000"
+    networks:
+      - default
+
   postgres:
     image: postgres:15.1
     container_name: postgres
@@ -29,9 +56,11 @@ services:
       resources:
         limits:
           memory: 8g
+
 networks:
   pointer-external:
     external: false
     name: pointer-external
+
 volumes:
       postgres-vol:
