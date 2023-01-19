@@ -27,10 +27,6 @@ services:
       - "3000:3000"
     networks:
       - default
-<<<<<<< HEAD
-
-=======
->>>>>>> ddb02e156efac0cd02f9489280e1c050399982e3
   frontend:
     image: pavelg1307/phonestorefront
     container_name: phonestorefront
@@ -39,10 +35,6 @@ services:
       - "8000:3000"
     networks:
       - default
-<<<<<<< HEAD
-
-=======
->>>>>>> ddb02e156efac0cd02f9489280e1c050399982e3
   postgres:
     image: postgres:15.1
     container_name: postgres
