@@ -3,4 +3,4 @@ run:
 run-dev:
 	npm run start:dev
 compose:
-	docker-compose -f ./docker-compose.yml up -d
+	docker-compose -f ./docker-compose.yml up -d --force-recreate

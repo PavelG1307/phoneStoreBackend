@@ -1,11 +1,9 @@
 import { Injectable } from "@nestjs/common"
-import { getModelToken, InjectModel } from "@nestjs/sequelize"
-import { Category } from "src/models/category.model"
+import { InjectModel } from "@nestjs/sequelize"
 import { OrderItem } from "src/models/orderItem.model"
-import { Product } from "src/models/product.model"
-import { Order } from "../models/Order.model"
+import { Order } from "../models/order.model"
 import { UUID } from "../models/types"
-import { CreateOrderDto } from "./dto/create-Order.dto"
+import { CreateOrderDto } from "./dto/create-order.dto"
 
 @Injectable()
 export class OrderService {
