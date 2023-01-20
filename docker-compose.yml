@@ -8,25 +8,33 @@ services:
     command: --interval 30 phonestore phonestorefront
 
   backend:
+    container_name: phonestorebackend
     image: pavelg1307/phonestore
-    container_name: phonestore
-    restart: unless-stopped
+    build:
+        context: .
+        target: production
+        dockerfile: ./Dockerfile
     environment:
       TZ: "Europe/Moscow"
       PORT: 3000
       API_PREFIX: '/api/v1'
-      DB_HOST: 127.0.0.1
+      DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: 'test'
-      DB_PASSWORD: 'password'
-      DB_NAME: 'testdb'
-      SECRET_JWT_KEY: Dsjdsagagfa5Sd4
+      DB_USER: terris
+      DB_PASSWORD: CBnhTod6
+      DB_NAME: store
+      SECRET_JWT_KEY: rvsZRFgJEJayUj0
       FRONT_URL: '*'
       NODE_ENV: 'prod'
     ports:
-      - "3000:3000"
+        - "3000:3000"
     networks:
-      - default
+      - store-external
+    volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+    restart: unless-stopped
+
   frontend:
     image: pavelg1307/phonestorefront
     container_name: phonestorefront
@@ -42,23 +50,22 @@ services:
     volumes:
       - postgres-vol:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=test
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=testdb
+      - POSTGRES_USER=terris
+      - POSTGRES_PASSWORD=CBnhTod6
+      - POSTGRES_DB=store
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
     networks:
-      - pointer-external
+      - store-external
     deploy:
       resources:
         limits:
           memory: 8g
 
 networks:
-  pointer-external:
-    external: false
-    name: pointer-external
+  store-external:
+    name: store-external
 
 volumes:
       postgres-vol:
