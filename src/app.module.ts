@@ -11,7 +11,6 @@ import { AuthModule } from './auth/auth.module';
 import { Category } from './models/category.model';
 import { CategoryModule } from './category/category.module';
 import { OrderItem } from './models/orderItem.model';
-import { OrderController } from './order/order.controller';
 import { OrderModule } from './order/order.module';
 
 @Module({

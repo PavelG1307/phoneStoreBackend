@@ -6,6 +6,7 @@ import { AppModule } from './app.module'
 import { corsOptions } from './core/config/cors'
 import { initSwagger } from './core/lib/swagger'
 import { EXIT_CODES } from './core/constants'
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   try {
@@ -17,6 +18,7 @@ async function bootstrap() {
     )
     app.enableCors(corsOptions)
     app.setGlobalPrefix(process.env.API_PREFIX)
+    app.use(cookieParser());
     app.use(compression())
     app.use(helmet())
 
