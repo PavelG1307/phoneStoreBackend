@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { LocalAuthGuard } from './guard/local.auth.guard';
 import { jwtConstants } from '../core/constants'
+import { RollbarHandler } from 'nestjs-rollbar';
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +14,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @RollbarHandler()
   async login(@Req() req, @Res({ passthrough: true }) response: Response) {
     const tokens = await this.authService.createTokens(req.user.uuid)
     response.cookie('_jwt1', tokens.accessToken, jwtConstants.cookieOptions)

@@ -13,6 +13,7 @@ import { CategoryModule } from './category/category.module';
 import { OrderItem } from './models/orderItem.model';
 import { OrderModule } from './order/order.module';
 import { RefreshToken } from './models/refresh.token.model';
+import { LoggerModule } from 'nestjs-rollbar';
 
 @Module({
   imports: [
@@ -30,6 +31,10 @@ import { RefreshToken } from './models/refresh.token.model';
       autoLoadModels: true,
       synchronize: true,
       logging: process.env.NODE_ENV === 'dev' ? console.log : false
+    }),
+    LoggerModule.forRoot({
+			accessToken: process.env.ROLLBAR_TOKEN,
+			environment: process.env.NODE_ENV,
     }),
     ProductModule,
     UserModule,
