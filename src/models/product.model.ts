@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript'
 import { Category } from './category.model'
-import { UUID, Variant } from './types'
+import { UUID, Variant, Option } from './types'
 
 @Table({
   modelName: 'Products'
@@ -56,10 +56,10 @@ export class Product extends Model<Product> {
   declare images?: string[]
 
   @Column({
-    type: DataType.ARRAY(DataType.INTEGER),
+    type: DataType.ARRAY(DataType.JSON),
     defaultValue: []
   })
-  declare optionIds?: number[]
+  declare options?: Option[]
 
   @Column({
     type: DataType.ARRAY(DataType.JSON),

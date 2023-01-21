@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Product } from '../models/product.model';
 import { CreateProductDto } from './dto/create-product.dto';
+import { GetProductDto } from './dto/get-product.dto';
 import { ProductService } from './product.service';
 
 @Controller('product')
@@ -14,8 +15,8 @@ export class ProductController {
   }
 
   @Get()
-  async getAll() {
-    return this.ProductService.getAll()
+  async getAll(@Query() filters: GetProductDto) {
+    return this.ProductService.getAll(filters)
   }
 
   @Post()
