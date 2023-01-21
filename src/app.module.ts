@@ -12,6 +12,7 @@ import { Category } from './models/category.model';
 import { CategoryModule } from './category/category.module';
 import { OrderItem } from './models/orderItem.model';
 import { OrderModule } from './order/order.module';
+import { RefreshToken } from './models/refresh.token.model';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { OrderModule } from './order/order.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [Product, Order, User, Category, OrderItem],
+      models: [Product, Order, User, Category, OrderItem, RefreshToken],
       autoLoadModels: true,
       synchronize: true,
       logging: process.env.NODE_ENV === 'dev' ? console.log : false
@@ -34,7 +35,7 @@ import { OrderModule } from './order/order.module';
     UserModule,
     AuthModule,
     CategoryModule,
-    OrderModule
+    OrderModule,
   ]
 })
 export class AppModule {}
