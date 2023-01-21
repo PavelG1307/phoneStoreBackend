@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { getModelToken, InjectModel } from "@nestjs/sequelize"
+import { InjectModel } from "@nestjs/sequelize"
 import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING } from "src/core/constants"
 import { Category } from "src/models/category.model"
 import { Product } from "../models/product.model"
@@ -34,8 +34,8 @@ export class ProductService {
     const products = Product.findAll({ 
       where: { ... where},
       order: [[orderBy || DEFAULT_SORTING.orderBy, order || DEFAULT_SORTING.order]],
-      limit: Number(limit) ?? DEFAULT_LAZY_LOADING.limit,
-      offset: Number(offset) ?? DEFAULT_LAZY_LOADING.offset,
+      limit: Number(limit) || DEFAULT_LAZY_LOADING.limit,
+      offset: Number(offset) || DEFAULT_LAZY_LOADING.offset,
       include: [Category]
     })
     return products
