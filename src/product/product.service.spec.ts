@@ -31,7 +31,6 @@ describe('ProductService', () => {
         {
           id: 1,
           optionIds: [1],
-          names: ['Синий'],
           isDefault: true,
           optionInfo: {
             price: 23999
@@ -40,7 +39,6 @@ describe('ProductService', () => {
         {
           id: 2,
           optionIds: [2],
-          names: ['Красный'],
           isDefault: true,
           optionInfo: {
             price: 26734
