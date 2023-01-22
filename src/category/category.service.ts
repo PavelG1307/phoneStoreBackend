@@ -18,11 +18,11 @@ export class CategoryService {
     const categories: Partial<Category>[] = [
       {
         uuid: '49097885-2d30-4c88-bc26-eb7db2c6d841',
-        name: 'Iphone'
+        name: 'IPhone'
       },
       {
         uuid: '50041b06-4eb0-45c8-8c87-bdf0049b4aa7',
-        name: 'Ipad'
+        name: 'IPad'
       },
       {
         uuid: '548606d6-5836-4e0f-b93e-4e772ca22076',
