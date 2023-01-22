@@ -3,25 +3,33 @@ import { InjectModel } from "@nestjs/sequelize"
 import { createHash } from "crypto"
 import { User } from "src/models/user.model"
 import { CreateUserDto } from "./dto/create-user.dto"
+import * as JWT from 'jsonwebtoken';
+import { RefreshToken } from "src/models/refresh.token.model"
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User)
     private readonly userModel: typeof User,
-  ) {}
+    @InjectModel(RefreshToken)
+    private readonly refreshTokenModel: typeof RefreshToken,
+  ) { }
 
   async get(uuid: string) {
-    const user = User.findAll({ where: {
-      uuid
-    }})
+    const user = User.findOne({
+      where: {
+        uuid
+      }
+    })
     return user
   }
 
   async getOne(login: string) {
-    const user = await User.findOne({ where: {
-      login
-    }})
+    const user = await User.findOne({
+      where: {
+        login
+      }
+    })
     return user?.dataValues
   }
 
@@ -37,7 +45,7 @@ export class UserService {
   }
 
   async checkAllowLogin(login: string) {
-    const user = await User.findOne({where: { login }})
+    const user = await User.findOne({ where: { login } })
     return !user
   }
 
@@ -46,5 +54,30 @@ export class UserService {
       where: { uuid },
       returning: true
     })
+  }
+
+  async getByRefreshToken(refreshToken: string): Promise<User | null> {
+    const isValidToken = JWT.verify(refreshToken, process.env.SECRET_REFRESH_JWT_KEY)
+    if (!isValidToken) return null
+    const tokenData = await RefreshToken.findOne({
+      where: {
+        value: refreshToken
+      },
+      include: [User]
+    })
+    if (!tokenData) return null
+    await RefreshToken.destroy({
+      where: {
+        value: refreshToken
+      }
+    })
+    return tokenData.user
+  }
+  async updateRefreshToken(userUUID: string, refreshToken: string): Promise<string> {
+    await RefreshToken.create({
+      value: refreshToken,
+      userUUID: userUUID
+    })
+    return refreshToken
   }
 }
