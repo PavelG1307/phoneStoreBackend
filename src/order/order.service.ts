@@ -28,17 +28,18 @@ export class OrderService {
   }
 
   async create(OrderDto: CreateOrderDto) {
-    // const newOrder = Order.create({...OrderDto}, {
-    //   returning: true
-    // })
-    // return newOrder
+    const newOrder = Order.create({...OrderDto}, {
+      returning: true,
+      include: [OrderItem]
+    })
+    return newOrder
   }
 
-  async update(uuid: string, Order: Partial<Order>) {
-    // console.log(uuid)
-    // return Order.update(Order, {
-    //   where: { uuid },
-    //   returning: true
-    // })
+  async update(uuid: string, order: Partial<Order>) {
+    return Order.update(order, {
+      where: {
+        uuid
+      }
+    })
   }
 }

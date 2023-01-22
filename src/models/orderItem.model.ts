@@ -22,7 +22,7 @@ export class OrderItem extends Model<OrderItem> {
     primaryKey: true,
     defaultValue: DataType.UUIDV4,
   })
-  declare uuid?: UUID
+  declare readonly uuid?: UUID
 
   @ForeignKey(() => Order)
   @Column({
@@ -45,7 +45,7 @@ export class OrderItem extends Model<OrderItem> {
     type: DataType.INTEGER,
     allowNull: false
   })
-  declare price: string
+  declare price: number
 
   @Column({
     type: DataType.TEXT,

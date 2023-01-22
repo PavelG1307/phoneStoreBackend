@@ -34,8 +34,8 @@ export class OrderController {
   @Put(':uuid')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @RollbarHandler()
-  async update(@Param('uuid') uuid: string, @Body() Order: Partial<Order>) {
-    return this.OrderService.update(uuid, Order)
+  async update(@Param('uuid') uuid: string, @Body() order: Partial<Order>) {
+    return this.OrderService.update(uuid, order)
   }
 }
 

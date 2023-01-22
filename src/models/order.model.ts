@@ -20,25 +20,37 @@ export class Order extends Model<Order> {
     primaryKey: true,
     defaultValue: DataType.UUIDV4
   })
-  declare uuid?: UUID
+  declare readonly uuid?: UUID
 
   @Column({
     type: DataType.TEXT,
   })
-  declare name: string
+  declare fullName: string
 
   @Column({
     type: DataType.TEXT,
   })
-  declare phone_number: string
-
-  @Column({
-    type: DataType.TEXT,
-  })
-  declare email: string
+  declare phoneNumber: string
 
   @HasMany(() => OrderItem, 'orderUUID')
   items: OrderItem[]
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0
+  })
+  declare communicationMethod: number
+
+  @Column({
+    type: DataType.INTEGER
+  })
+  declare delivery: number
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: ''
+  })
+  declare deliveryMessage?: string
 
   @Column({
     type: DataType.INTEGER,
@@ -48,9 +60,9 @@ export class Order extends Model<Order> {
 
   @Column({ type: DataType.DATE })
   @CreatedAt
-  declare createdAt?: Date
+  declare readonly createdAt?: Date
 
   @Column({ type: DataType.DATE })
   @UpdatedAt
-  declare updatedAt?: Date
+  declare readonly updatedAt?: Date
 }
