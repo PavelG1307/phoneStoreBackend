@@ -11,17 +11,17 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly UserService: UserService) { }
 
-  @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
   @Get()
+  @RollbarHandler()
+  @UseGuards(JwtAuthGuard)
   getProfile(@Request() req) {
     return req.user;
   }
 
+  @Post()
+  @RollbarHandler()
   @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @RollbarHandler()
-  @Post()
   async create(@Body() user: CreateUserDto) {
     return this.UserService.create(user)
   }
