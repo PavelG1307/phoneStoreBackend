@@ -48,18 +48,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       request.cookies['_jwt1'] = newAccessToken;
       request.cookies['_jwt2'] = newRefreshToken;
 
-      response.cookie('_jwt1', newAccessToken, jwtConstants.cookieOptions);
-      response.cookie(
-        '_jwt2',
-        newRefreshToken,
-        jwtConstants.cookieOptions,
-      );
+      response.cookie('_jwt1', newAccessToken, jwtConstants.accessTokenOptions);
+      response.cookie('_jwt2', newRefreshToken, jwtConstants.refreshTokenOptions);
 
       return this.activate(context);
     } catch (err) {
       console.log(err)
-      response.clearCookie('_jwt1', jwtConstants.cookieOptions);
-      response.clearCookie('_jwt2', jwtConstants.cookieOptions);
+      response.clearCookie('_jwt1', jwtConstants.accessTokenOptions);
+      response.clearCookie('_jwt2', jwtConstants.refreshTokenOptions);
       return false;
     }
   }

@@ -13,18 +13,21 @@ export class AuthController {
   ) {}
 
   @UseGuards(LocalAuthGuard)
-  @Post('login')
   @RollbarHandler()
+  @Post('login')
   async login(@Req() req, @Res({ passthrough: true }) response: Response) {
     const tokens = await this.authService.createTokens(req.user.uuid)
-    response.cookie('_jwt1', tokens.accessToken, jwtConstants.cookieOptions)
-    response.cookie('_jwt2', tokens.refreshToken, jwtConstants.cookieOptions)
+    response.cookie('_jwt1', tokens.accessToken, jwtConstants.accessTokenOptions)
+    response.cookie('_jwt2', tokens.refreshToken, jwtConstants.refreshTokenOptions)
     return
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
-  getProfile(@Req() req) {
-    return req.user;
+  @RollbarHandler()
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('_jwt1')
+    response.clearCookie('_jwt2')
+    return
   }
 }
