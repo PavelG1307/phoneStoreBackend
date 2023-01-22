@@ -25,8 +25,6 @@ export class ProductService {
 
   async getAll(filters: GetProductDto) {
     const { productUUIDs, categoryUUID, limit, offset, orderBy, order } = filters
-    console.log(limit, offset);
-    
     const where: WhereOptions<Product> = {
         visible: true
       }
@@ -52,7 +50,6 @@ export class ProductService {
   }
 
   async update(uuid: string, product: Partial<Product>) {
-    console.log(uuid)
     return Product.update(product, {
       where: { uuid },
       returning: true
