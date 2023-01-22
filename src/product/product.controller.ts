@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RollbarHandler } from 'nestjs-rollbar';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Product } from '../models/product.model';
@@ -18,7 +18,7 @@ export class ProductController {
 
   @Get()
   @RollbarHandler()
-  async getAll(@Query() filters: GetProductDto) {
+  async getAll(@Query(new ValidationPipe({ transform: true })) filters: GetProductDto) {
     return this.ProductService.getAll(filters)
   }
 

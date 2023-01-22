@@ -1,4 +1,5 @@
-import { IsEnum, IsOptional } from "class-validator"
+import { Transform, Type } from "class-transformer"
+import { IsArray, IsEnum, IsOptional, IsString } from "class-validator"
 import { UUID } from "src/models/types"
 
 export class GetProductDto {
@@ -19,4 +20,11 @@ export class GetProductDto {
 
   @IsOptional()
   readonly categoryUUID?: UUID
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Type(() => String)
+  @Transform(({ value }) => value.split(','))
+  readonly productUUIDs?: string[]
 }

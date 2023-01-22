@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
+import { Op, WhereOptions } from "sequelize"
 import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING } from "src/core/constants"
 import { Category } from "src/models/category.model"
 import { Product } from "../models/product.model"
@@ -23,14 +24,16 @@ export class ProductService {
   }
 
   async getAll(filters: GetProductDto) {
-    const { categoryUUID, limit, offset, orderBy, order } = filters
+    const { productUUIDs, categoryUUID, limit, offset, orderBy, order } = filters
     console.log(limit, offset);
     
-    const where: Partial<Product> = {
-        visible: true,
+    const where: WhereOptions<Product> = {
+        visible: true
       }
       if (categoryUUID) where.categoryUUID = categoryUUID
-      
+      if (productUUIDs) where.uuid = {
+        [Op.in]: productUUIDs
+      }
     const products = Product.findAll({ 
       where: { ... where},
       order: [[orderBy || DEFAULT_SORTING.orderBy, order || DEFAULT_SORTING.order]],
