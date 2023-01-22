@@ -7,39 +7,38 @@ import { GetProductDto } from './dto/get-product.dto';
 import { ProductService } from './product.service';
 
 @Controller('product')
-
 export class ProductController {
   constructor(private readonly ProductService: ProductService) { }
 
-  @RollbarHandler()
   @Get(':uuid')
+  @RollbarHandler()
   async get(@Param('uuid') uuid: string) {
     return this.ProductService.get(uuid)
   }
 
-  @RollbarHandler()
   @Get()
+  @RollbarHandler()
   async getAll(@Query() filters: GetProductDto) {
     return this.ProductService.getAll(filters)
   }
 
-  @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
   @Post()
+  @RollbarHandler()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() product: CreateProductDto) {
     return this.ProductService.create(product)
   }
 
-  @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
   @Put(':uuid')
+  @RollbarHandler()
+  @UseGuards(JwtAuthGuard)
   async update(@Param('uuid') uuid: string, @Body() product: Partial<Product>) {
     return this.ProductService.update(uuid, product)
   }
 
-  @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
   @Delete(':uuid')
+  @RollbarHandler()
+  @UseGuards(JwtAuthGuard)
   async delete(@Param('uuid') uuid: string) {
     return this.ProductService.delete(uuid)
   }
