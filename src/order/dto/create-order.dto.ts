@@ -1,13 +1,10 @@
-import { UUID, Variant } from "../../models/types"
+import { OrderItem } from "src/models/orderItem.model"
 
 export class CreateOrderDto {
-    name: string
-    price: number
-    priceOld: number
-    categoryUUID: UUID
-    images: string[]
-    description: string
-    visible: boolean
-    optionIds: number[]
-    variants?: Variant[]
+    fullName: string
+    phoneNumber: string
+    items: OrderItem[]
+    communicationMethod: number
+    delivery: number
+    deliveryMessage?: string
 }
