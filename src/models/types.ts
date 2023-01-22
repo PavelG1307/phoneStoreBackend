@@ -8,6 +8,11 @@ export type Option = {
     type?: string
 }
 
+export type OptionList = {
+    name: string,
+    items: Option[]
+}
+
 export type Variant = {
     id: number,
     isDefault?: boolean,
