@@ -29,6 +29,11 @@ export class ProductController {
     return this.ProductService.create(product)
   }
 
+  @Post('/migrate')
+  async migrate() {
+    return this.ProductService.migrate()
+  }
+
   @Put(':uuid')
   @RollbarHandler()
   @UseGuards(JwtAuthGuard)

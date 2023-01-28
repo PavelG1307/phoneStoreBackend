@@ -5,7 +5,6 @@ export type Option = {
     id: number,
     name?: string,
     values: string
-    type?: string
 }
 
 export type OptionList = {
@@ -19,3 +18,5 @@ export type Variant = {
     optionIds: number[]
     optionInfo: Partial<Product>
   }
+
+  
