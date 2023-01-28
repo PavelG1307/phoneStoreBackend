@@ -14,7 +14,7 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async login(@Req() req, @Res({ passthrough: true }) response: Response) {
     const tokens = await this.authService.createTokens(req.user.uuid)
     response.cookie('_jwt1', tokens.accessToken, jwtConstants.accessTokenOptions)
@@ -24,7 +24,7 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('_jwt1')
     response.clearCookie('_jwt2')

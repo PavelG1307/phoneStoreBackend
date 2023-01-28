@@ -11,27 +11,27 @@ export class OrderController {
   constructor(private readonly OrderService: OrderService) { }
 
   @Get(':uuid')
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async get(@Param('uuid') uuid: string) {
     return this.OrderService.get(uuid)
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async getAll() {
     return this.OrderService.getAll()
   }
 
   @Post()
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async create(@Body() Order: CreateOrderDto) {
     return this.OrderService.create(Order)
   }
 
   @Put(':uuid')
   @UseGuards(JwtAuthGuard)
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async update(@Param('uuid') uuid: string, @Body() order: Partial<Order>) {
     return this.OrderService.update(uuid, order)
   }
