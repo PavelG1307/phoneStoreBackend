@@ -2,17 +2,17 @@ export const jwtConstants = {
     secret: process.env.SECRET_JWT_KEY,
     expiresIn: `7200s`,
     accessTokenOptions: {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
       maxAge: 2 * 60 * 60 * 1000,
       path: '/',
-      samesite: 'None'
+      samesite: 'none'
     },
     refreshTokenOptions: {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
       path: '/',
-      samesite: 'None'
+      samesite: 'none'
     }
 };
