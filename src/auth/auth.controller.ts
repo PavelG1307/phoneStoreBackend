@@ -19,19 +19,16 @@ export class AuthController {
     const tokens = await this.authService.createTokens(req.user.uuid)
     response.cookie('jwt1', tokens.accessToken, {
       httpOnly: true,
-      secure: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
       path: '/',
-      sameSite: 'none'
     })
     response.cookie('jwt2', tokens.refreshToken, {
       httpOnly: true,
-      secure: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
       path: '/',
       sameSite: 'none'
     })
-    return
+    return tokens
   }
 
   @Post('logout')
