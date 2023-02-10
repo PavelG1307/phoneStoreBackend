@@ -3,14 +3,14 @@ export const jwtConstants = {
     expiresIn: `7200s`,
     accessTokenOptions: {
       httpOnly: true,
-      secure: true,
+      secure: false,
       maxAge: 2 * 60 * 60 * 1000,
       path: '/',
       samesite: 'none'
     },
     refreshTokenOptions: {
       httpOnly: true,
-      secure: true,
+      secure: false,
       maxAge: 30 * 24 * 60 * 60 * 1000,
       path: '/',
       samesite: 'none'
