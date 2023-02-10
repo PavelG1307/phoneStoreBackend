@@ -17,8 +17,20 @@ export class AuthController {
   @RollbarHandler({ rethrow: true })
   async login(@Req() req, @Res({ passthrough: true }) response: Response) {
     const tokens = await this.authService.createTokens(req.user.uuid)
-    response.cookie('_jwt1', tokens.accessToken, jwtConstants.accessTokenOptions)
-    response.cookie('_jwt2', tokens.refreshToken, jwtConstants.refreshTokenOptions)
+    response.cookie('jwt1', tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/',
+      sameSite: 'none'
+    })
+    response.cookie('jwt2', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/',
+      sameSite: 'none'
+    })
     return
   }
 
@@ -26,8 +38,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @RollbarHandler({ rethrow: true })
   async logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('_jwt1')
-    response.clearCookie('_jwt2')
+    response.clearCookie('jwt1')
+    response.clearCookie('jwt2')
     return
   }
 }

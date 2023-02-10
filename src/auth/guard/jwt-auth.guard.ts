@@ -30,7 +30,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       const isValidAccessToken = await this.validateToken(accessToken);
       if (isValidAccessToken) return this.activate(context);
 
-      const refreshToken = request.cookies['_jwt2'];
+      const refreshToken = request.cookies['jwt2'];
       if (!refreshToken)
         throw new UnauthorizedException('Refresh token is not set');
       const isValidRefreshToken = await this.validateToken(refreshToken);
@@ -45,17 +45,17 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
       await this.userService.updateRefreshToken(user.uuid, newRefreshToken);
 
-      request.cookies['_jwt1'] = newAccessToken;
-      request.cookies['_jwt2'] = newRefreshToken;
+      request.cookies['jwt1'] = newAccessToken;
+      request.cookies['jwt2'] = newRefreshToken;
 
-      response.cookie('_jwt1', newAccessToken, jwtConstants.accessTokenOptions);
-      response.cookie('_jwt2', newRefreshToken, jwtConstants.refreshTokenOptions);
+      response.cookie('jwt1', newAccessToken, jwtConstants.accessTokenOptions);
+      response.cookie('jwt2', newRefreshToken, jwtConstants.refreshTokenOptions);
 
       return this.activate(context);
     } catch (err) {
       console.log(err)
-      response.clearCookie('_jwt1', jwtConstants.accessTokenOptions);
-      response.clearCookie('_jwt2', jwtConstants.refreshTokenOptions);
+      response.clearCookie('jwt1', jwtConstants.accessTokenOptions);
+      response.clearCookie('jwt2', jwtConstants.refreshTokenOptions);
       return false;
     }
   }
