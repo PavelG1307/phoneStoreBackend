@@ -1,6 +1,6 @@
 axios({
     method: 'POST',
-    url: 'http://localhost:3000/api/v1/auth/login',
+    url: 'https://rk-tech.shop/api/v1/auth/login',
     data: {
         login: 'pavel',
         password: 'qwerty'
