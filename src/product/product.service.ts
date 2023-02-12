@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/sequelize"
 import { Op, WhereOptions } from "sequelize"
 import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING } from "src/core/constants"
 import { Category } from "src/models/category.model"
+import { StorageService } from "src/storage/storage.service"
 import { Product } from "../models/product.model"
 import { UUID } from "../models/types"
 import { CreateProductDto } from "./dto/create-product.dto"
@@ -12,7 +13,8 @@ import { iphones, ipads, macbooks, watchs } from './migrations/data'
 export class ProductService {
   constructor(
     @InjectModel(Product)
-    private readonly productModel: typeof Product
+    private readonly productModel: typeof Product,
+    private storageService: StorageService,
   ) { }
 
   async get(uuid: UUID) {
@@ -72,13 +74,13 @@ export class ProductService {
     for (const i in products) {
       const product = products[i]
       let isFirst = true
-      const variants = product?.variants.map((variant) => {
-        const images = variant?.images.map(image => {
+      const variants = await Promise.all(product?.variants.map(async (variant) => {
+        const oldImageURLs = variant?.images.map(image => {
           const id = image?.id
-          const oldUrl = `https://эплтрейд.рф/img/${id}_1920_q55.avif`
-          const newUrl = uploadToCdn(oldUrl)
-          return newUrl
+          return `https://эплтрейд.рф/img/${id}_1920_q55.avif`
         })
+        const images = await this.storageService.downloadAndUploadToCdnArray(oldImageURLs)
+        console.log(`Загрузил ${images.length} фото`);
         const optionsIds = variant.option_values.map(option => option.value_id)
         const newVariant = {
           id: variant.id,
@@ -91,18 +93,20 @@ export class ProductService {
         }
         isFirst = false
         return newVariant
-      })
+      }))
 
       const options = product.options.map(option => {
         const items = option.values.map(value => {
           return {
             id: value.id,
+            type: option?.data?.type || 'list',
             name: value.name === value.name,
             value: option?.data?.type === 'color' ? value?.data?.color : value.name
           }
         })
         return {
-          name: option.name === 'цвет' ? 'Цвет' : option.name,
+          name: option.name,
+          type: items[0]?.type || 'list',
           items: items
         }
       })

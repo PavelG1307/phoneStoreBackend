@@ -88,5 +88,21 @@ export class StorageService {
       return null
     }
   }
+
+  public async downloadAndUploadToCdnArray(urls: string[]): Promise<string[]> {
+    const results = urls.map((url) => this.downloadAndUploadToCdn(url))
+    return await Promise.all(results)
+  }
+  public async downloadAndUploadToCdn(url: string): Promise<string | null> {
+    const response = await axios.get(url, {
+      responseType: 'arraybuffer',
+    })
+    const buffer = Buffer.from(response.data, 'binary')
+    const image = await sharp(buffer).webp().toBuffer()
+    const fileName = uuid.v4()
+    const relativeImagePath = `/images/${fileName}.webp`
+    const mimetype = 'image/webp'    
+    return this.uploadToCDN(image, relativeImagePath, mimetype)
+  }
   
 }

@@ -8,5 +8,6 @@ import { StorageService } from './storage.service';
     providers: [StorageService],
     imports: [
         UserModule
-    ]})
+    ],
+    exports: [StorageService]})
 export class StorageModule {}
