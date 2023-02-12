@@ -14,6 +14,7 @@ import { OrderItem } from './models/orderItem.model';
 import { OrderModule } from './order/order.module';
 import { RefreshToken } from './models/refresh.token.model';
 import { LoggerModule } from 'nestjs-rollbar';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { LoggerModule } from 'nestjs-rollbar';
     AuthModule,
     CategoryModule,
     OrderModule,
+    StorageModule
   ]
 })
 export class AppModule {}

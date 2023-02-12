@@ -11,13 +11,13 @@ export class CategoryController {
   constructor(private readonly CategoryService: CategoryService) { }
 
   @Get()
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async getAll() {
     return this.CategoryService.getAll()
   }
 
   @Post()
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RolesGuard)
   async magrate() {

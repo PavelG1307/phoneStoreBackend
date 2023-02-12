@@ -11,20 +11,20 @@ export class ProductController {
   constructor(private readonly ProductService: ProductService) { }
 
   @Get(':uuid')
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async get(@Param('uuid') uuid: string) {
     return this.ProductService.get(uuid)
   }
 
   @Get()
-  @RollbarHandler()
+  @RollbarHandler({ rethrow: true })
   async getAll(@Query(new ValidationPipe({ transform: true })) filters: GetProductDto) {
     return this.ProductService.getAll(filters)
   }
 
   @Post()
-  @RollbarHandler()
   @UseGuards(JwtAuthGuard)
+  @RollbarHandler({ rethrow: true })
   async create(@Body() product: CreateProductDto) {
     return this.ProductService.create(product)
   }
@@ -35,15 +35,15 @@ export class ProductController {
   }
 
   @Put(':uuid')
-  @RollbarHandler()
   @UseGuards(JwtAuthGuard)
+  @RollbarHandler({ rethrow: true })
   async update(@Param('uuid') uuid: string, @Body() product: Partial<Product>) {
     return this.ProductService.update(uuid, product)
   }
 
   @Delete(':uuid')
-  @RollbarHandler()
   @UseGuards(JwtAuthGuard)
+  @RollbarHandler({ rethrow: true })
   async delete(@Param('uuid') uuid: string) {
     return this.ProductService.delete(uuid)
   }
