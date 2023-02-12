@@ -8,7 +8,7 @@ import { Product } from "../models/product.model"
 import { UUID } from "../models/types"
 import { CreateProductDto } from "./dto/create-product.dto"
 import { GetProductDto } from "./dto/get-product.dto"
-import { iphones, ipads, macbooks, watchs } from './migrations/data'
+import { iphones, ipads, macbooks, watchs, keyboards, covers, cabels } from './migrations/data'
 @Injectable()
 export class ProductService {
   constructor(
@@ -67,6 +67,9 @@ export class ProductService {
     await this.migrateProducts(iphones, '49097885-2d30-4c88-bc26-eb7db2c6d841')
     await this.migrateProducts(ipads, '50041b06-4eb0-45c8-8c87-bdf0049b4aa7')
     await this.migrateProducts(watchs, '4f3c7659-6cb4-4db9-93ec-a8975d681a20')
+    await this.migrateProducts(keyboards, '9c4fc64f-6545-4c8b-9745-e900e506082a')
+    await this.migrateProducts(covers, '3c28df49-c662-469e-90df-888724e24da1')
+    await this.migrateProducts(cabels, 'baa43a78-850b-42c5-8487-e706e10292c5')
     return
   }
 
@@ -100,7 +103,7 @@ export class ProductService {
           return {
             id: value.id,
             type: option?.data?.type || 'list',
-            name: value.name === value.name,
+            name: value.name,
             value: option?.data?.type === 'color' ? value?.data?.color : value.name
           }
         })

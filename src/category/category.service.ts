@@ -50,12 +50,17 @@ export class CategoryService {
       },
       {
         uuid: '9c4fc64f-6545-4c8b-9745-e900e506082a',
-        name: 'Зарядные блоки',
+        name: 'Клавиатуры, мышки‍',
         parentUUID: 'c22124cd-f6f0-4e4a-b898-c1606f1c8e25'
       },
       {
         uuid: '3c28df49-c662-469e-90df-888724e24da1',
-        name: 'Чехлы',
+        name: 'Чехлы, MagSafe',
+        parentUUID: 'c22124cd-f6f0-4e4a-b898-c1606f1c8e25'
+      },
+      {
+        uuid: 'baa43a78-850b-42c5-8487-e706e10292c5',
+        name: 'Кабели, адаптеры‍',
         parentUUID: 'c22124cd-f6f0-4e4a-b898-c1606f1c8e25'
       }
     ]
