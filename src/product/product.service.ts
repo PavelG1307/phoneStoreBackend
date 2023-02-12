@@ -75,7 +75,9 @@ export class ProductService {
       const variants = product?.variants.map((variant) => {
         const images = variant?.images.map(image => {
           const id = image?.id
-          return `https://эплтрейд.рф/img/${id}_1920_q55.avif`
+          const oldUrl = `https://эплтрейд.рф/img/${id}_1920_q55.avif`
+          const newUrl = uploadToCdn(oldUrl)
+          return newUrl
         })
         const optionsIds = variant.option_values.map(option => option.value_id)
         const newVariant = {
