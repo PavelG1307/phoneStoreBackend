@@ -3,8 +3,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from '../auth.service';
 import { ExtractJwt } from 'passport-jwt';
-import { cookieExtractor } from 'src/core/utils';
-import { jwtConstants } from 'src/core/constants';
+import { cookieOrHeaderExtractor } from 'src/core/utils';
+import { cookieConstants } from 'src/core/constants';
 import * as JWT from 'jsonwebtoken';
 
 @Injectable()
@@ -22,12 +22,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const response = context.switchToHttp().getResponse();
 
     try {
-      const accessToken = ExtractJwt.fromExtractors([cookieExtractor])(request);
+      const accessToken = ExtractJwt.fromExtractors([cookieOrHeaderExtractor])(request);
       
       if (!accessToken)
         throw new UnauthorizedException('Access token is not set');
 
-      const isValidAccessToken = await this.validateToken(accessToken);
+      const isValidAccessToken = await this.validateToken(accessToken);      
       if (isValidAccessToken) return this.activate(context);
 
       const refreshToken = request.cookies['_jwt2'];
@@ -48,14 +48,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       request.cookies['_jwt1'] = newAccessToken;
       request.cookies['_jwt2'] = newRefreshToken;
 
-      response.cookie('_jwt1', newAccessToken, jwtConstants.accessTokenOptions);
-      response.cookie('_jwt2', newRefreshToken, jwtConstants.refreshTokenOptions);
+      response.cookie('_jwt1', newAccessToken, cookieConstants.accessTokenOptions);
+      response.cookie('_jwt2', newRefreshToken, cookieConstants.refreshTokenOptions);
 
       return this.activate(context);
     } catch (err) {
       console.log(err)
-      response.clearCookie('_jwt1', jwtConstants.accessTokenOptions);
-      response.clearCookie('_jwt2', jwtConstants.refreshTokenOptions);
+      response.clearCookie('_jwt1', cookieConstants.accessTokenOptions);
+      response.clearCookie('_jwt2', cookieConstants.refreshTokenOptions);
       return false;
     }
   }
