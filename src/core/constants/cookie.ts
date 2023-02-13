@@ -10,7 +10,7 @@ export const cookieConstants: {
     httpOnly: true,
     secure: true,
     maxAge: 2 * h,
-    path: 'http://127.0.0.1:5500/',
+    path: '/',
     sameSite: 'none'
   },
   refreshTokenOptions: {
