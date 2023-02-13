@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
 import { Op } from "sequelize"
 import { OrderItem } from "src/models/orderItem.model"
@@ -113,5 +113,15 @@ export class OrderService {
         uuid
       }
     })
+  }
+
+  async delete(uuid: string) {
+    const success =  await Order.destroy({
+      where: {
+        uuid
+      }
+    })
+    if (!success) throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
+    return
   }
 }

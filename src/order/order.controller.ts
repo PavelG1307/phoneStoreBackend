@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { RollbarHandler } from 'nestjs-rollbar';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Order } from '../models/order.model';
@@ -41,6 +41,13 @@ export class OrderController {
   @RollbarHandler({ rethrow: true })
   async update(@Param('uuid') uuid: string, @Body() order: Partial<Order>) {
     return this.OrderService.update(uuid, order)
+  }
+
+  @Delete(':uuid')
+  @UseGuards(JwtAuthGuard)
+  @RollbarHandler({ rethrow: true })
+  async delete(@Param('uuid') uuid: string) {
+    return this.OrderService.delete(uuid)
   }
 }
 
