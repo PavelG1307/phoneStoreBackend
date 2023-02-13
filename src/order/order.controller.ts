@@ -10,6 +10,13 @@ import { OrderService } from './order.service';
 export class OrderController {
   constructor(private readonly OrderService: OrderService) { }
 
+  @Get('statistics')
+  @UseGuards(JwtAuthGuard)
+  @RollbarHandler({ rethrow: true })
+  async getStatistics() {
+    return this.OrderService.getStatistics()
+  }
+
   @Get(':uuid')
   @RollbarHandler({ rethrow: true })
   async get(@Param('uuid') uuid: string) {

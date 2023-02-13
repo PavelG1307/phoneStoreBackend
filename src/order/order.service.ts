@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
+import { Op } from "sequelize"
 import { OrderItem } from "src/models/orderItem.model"
 import { Order } from "../models/order.model"
 import { UUID } from "../models/types"
@@ -21,10 +22,81 @@ export class OrderService {
   }
 
   async getAll() {
-    const Orders = Order.findAll({ 
+    const orders = Order.findAll({ 
       include: [OrderItem]
     })
-    return Orders
+    return orders
+  }
+
+  async getStatistics() {
+    const periodTo = new Date().valueOf()
+    const periodFrom = new Date().setMonth(new Date().getMonth() - 3).valueOf()
+    const pervoicePeriodFrom = new Date(periodFrom).setMonth(new Date(periodFrom).getMonth() - 3).valueOf()
+    const numberNewOrders = await Order.count({
+      where: {
+        createdAt: {
+          [Op.between]: [periodFrom, periodTo]
+        },
+        status: 0
+      }
+    })
+    const numberNewOrdersPervoicePeriod = await Order.count({
+      where: {
+        createdAt: {
+          [Op.between]: [pervoicePeriodFrom, periodFrom]
+        },
+        status: 0
+      }
+    })
+    
+    const numberOrders = await Order.count({
+      where: {
+        createdAt: {
+          [Op.between]: [periodFrom, periodTo]
+        },
+      }
+    })
+    const numberOrdersPervoicePeriod = await Order.count({
+      where: {
+        createdAt: {
+          [Op.between]: [pervoicePeriodFrom, periodFrom]
+        },
+      }
+    })
+
+    const numberComplitedOrders = await Order.count({
+      where: {
+        createdAt: {
+          [Op.between]: [pervoicePeriodFrom, periodFrom]
+        },
+        status: 2
+      }
+    })
+
+    const numberComplitedOrdersPervoicePeriod = await Order.count({
+      where: {
+        createdAt: {
+          [Op.between]: [pervoicePeriodFrom, periodFrom]
+        },
+        status: 2
+      }
+    })
+
+    return {
+      period: [periodFrom, periodTo],
+      all: {
+        value: numberOrders,
+        pervoiceValue: numberOrdersPervoicePeriod
+      },
+      new: {
+        value: numberNewOrders,
+        pervoiceValue: numberNewOrdersPervoicePeriod
+      },
+      complited: {
+        value: numberComplitedOrders,
+        pervoiceValue: numberComplitedOrdersPervoicePeriod
+      }
+    }
   }
 
   async create(OrderDto: CreateOrderDto) {
