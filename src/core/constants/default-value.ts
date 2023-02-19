@@ -1,5 +1,5 @@
-export const DEFAULT_SORTING = {
-  orderBy: 'price',
+export const DEFAULT_SORTING_PRODUCT = {
+  orderBy: 'sortValue',
   order: 'DESC'
 };
 
