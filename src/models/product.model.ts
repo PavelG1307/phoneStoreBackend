@@ -67,6 +67,14 @@ export class Product extends Model<Product> {
   })
   declare variants: Variant[]
 
+  @Column({ type: DataType.DATE })
+  @CreatedAt
+  declare releaseAt?: Date
+
+  @Column({ type: DataType.INTEGER })
+  @CreatedAt
+  declare sortValue?: number
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   declare isDeleted?: boolean
 

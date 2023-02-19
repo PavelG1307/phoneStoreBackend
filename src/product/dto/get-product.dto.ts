@@ -11,8 +11,8 @@ export class GetProductDto {
   offset?: string
 
   @IsOptional()
-  @IsEnum(['price', 'createdAt'])
-  orderBy?: 'price' | 'createdAt'
+  @IsEnum(['price', 'createdAt', 'releaseAt', 'sortValue'])
+  orderBy?: 'price' | 'createdAt' | 'releaseAt' | 'sortValue'
 
   @IsOptional()
   @IsEnum(['DESC', 'ASC'])

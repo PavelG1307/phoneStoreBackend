@@ -26,15 +26,15 @@ export class ProductService {
   async getAll(filters: GetProductDto) {
     const { productUUIDs, categoryUUID, limit, offset, orderBy, order } = filters
     const where: WhereOptions<Product> = {
-        visible: true
-      }
-      if (categoryUUID) where.categoryUUID = categoryUUID
-      if (productUUIDs) where.uuid = {
-        [Op.in]: productUUIDs
-      }
-    const products = Product.findAll({ 
-      where: { ... where},
-      order: [[orderBy || DEFAULT_SORTING.orderBy, order || DEFAULT_SORTING.order]],
+      visible: true
+    }
+    if (categoryUUID) where.categoryUUID = categoryUUID
+    if (productUUIDs) where.uuid = {
+      [Op.in]: productUUIDs
+    }
+    const products = Product.findAll({
+      where: { ...where },
+      order: [[orderBy || DEFAULT_SORTING.orderBy, order || DEFAULT_SORTING.order], ['id', 'DESC']],
       limit: Number(limit) || DEFAULT_LAZY_LOADING.limit,
       offset: Number(offset) || DEFAULT_LAZY_LOADING.offset,
       include: [Category]
