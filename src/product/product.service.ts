@@ -42,6 +42,7 @@ export class ProductService {
     return products
   }
 
+  
   async create(product: CreateProductDto) {
     const newProduct = Product.create(product, {
       returning: true
