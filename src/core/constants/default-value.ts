@@ -1,6 +1,6 @@
 export const DEFAULT_SORTING = {
   orderBy: 'price',
-  order: 'DESC'
+  order: 'ASC'
 };
 
 export const DEFAULT_LAZY_LOADING = {
