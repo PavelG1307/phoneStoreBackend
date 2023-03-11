@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { RollbarHandler } from 'nestjs-rollbar';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Order } from '../models/order.model';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { GetStatisticsDto } from './dto/get-statistics.dto';
 import { OrderService } from './order.service';
 
 @Controller('order')
@@ -13,8 +14,8 @@ export class OrderController {
   @Get('statistics')
   @UseGuards(JwtAuthGuard)
   @RollbarHandler({ rethrow: true })
-  async getStatistics() {
-    return this.OrderService.getStatistics()
+  async getStatistics(@Query() query: GetStatisticsDto) {
+    return this.OrderService.getStatistics(query)
   }
 
   @Get(':uuid')

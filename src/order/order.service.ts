@@ -28,10 +28,19 @@ export class OrderService {
     return orders
   }
 
-  async getStatistics() {
-    const periodTo = new Date().valueOf()
-    const periodFrom = new Date().setMonth(new Date().getMonth() - 3).valueOf()
-    const pervoicePeriodFrom = new Date(periodFrom).setMonth(new Date(periodFrom).getMonth() - 3).valueOf()
+  async getStatistics(opts: {
+      from?: string | number,
+      to?: string | number
+    }) {
+    const dateTo = opts.to
+      ? new Date(opts.to)
+      : new Date()
+    const dateFrom = opts.from
+      ? new Date(opts.from)
+      : new Date(new Date().setMonth(new Date().getMonth() - 1))
+    const periodTo = dateTo.valueOf()
+    const periodFrom = dateFrom.valueOf()
+    const pervoicePeriodFrom = 2 * periodFrom - periodTo
     const numberNewOrders = await Order.count({
       where: {
         createdAt: {
