@@ -67,7 +67,7 @@ export class OrderService {
     const numberComplitedOrders = await Order.count({
       where: {
         createdAt: {
-          [Op.between]: [pervoicePeriodFrom, periodFrom]
+          [Op.between]: [periodFrom, periodTo]
         },
         status: 2
       }
@@ -99,8 +99,9 @@ export class OrderService {
     }
   }
 
-  async create(OrderDto: CreateOrderDto) {
-    const newOrder = Order.create({...OrderDto}, {
+  async create(orderDto: CreateOrderDto) {
+    console.log(orderDto);
+    const newOrder = Order.create({...orderDto}, {
       returning: true,
       include: [OrderItem]
     })
