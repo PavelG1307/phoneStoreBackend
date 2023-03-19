@@ -14,11 +14,11 @@ export class OrderService {
   ) {}
 
   async get(uuid: UUID) {
-    const Orders = await Order.findOne({ 
+    const orders = await Order.findOne({ 
       where: { uuid },
       include: [OrderItem]
     })
-    return Orders
+    return orders
   }
 
   async getAll() {
