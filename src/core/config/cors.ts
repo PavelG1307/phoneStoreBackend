@@ -7,7 +7,10 @@ export const corsOptions: CorsOptions = {
     'http://192.168.1.109:3000',
     'https://rk-tech.shop',
     'https://alpha.rk-tech.shop',
-    'http://172.20.10.2:3000'
+    'http://172.20.10.2:3000',
+    'http://192.168.1.42:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
