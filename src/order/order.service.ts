@@ -175,8 +175,8 @@ export class OrderService {
     }
   }
 
-  async update(uuid: string, Order: Partial<Order>) {
-    return Order.update(Order, {
+  async update(uuid: string, order: Partial<Order>) {
+    return Order.update(order, {
       where: {
         uuid
       }
