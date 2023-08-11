@@ -78,4 +78,24 @@ export class Order extends Model<Order> {
   @Column({ type: DataType.DATE })
   @UpdatedAt
   declare readonly updatedAt?: Date
+
+  @Column({
+    type: DataType.INTEGER
+  })
+  declare readonly paymentTypeId?: number
+
+  @Column({
+    type: DataType.TEXT
+  })
+  declare readonly email?: string
+
+  @Column({
+    type: DataType.INTEGER
+  })
+  declare readonly payerTypeId?: number
+
+  @Column({
+    type: DataType.TEXT
+  })
+  declare readonly comment?: string
 }

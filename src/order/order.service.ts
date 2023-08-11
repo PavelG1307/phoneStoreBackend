@@ -31,6 +31,10 @@ export class OrderService {
       delivery: order.delivery,
       deliveryMessage: order.deliveryMessage,
       promoCodeUUID: order.promoCodeUUID,
+      paymentTypeId: order.paymentTypeId,
+      email: order.email,
+      payerTypeId: order.payerTypeId,
+      comment: order.comment,
       promoCode: order.promoCodeUUID && order.promoCode ? {
         uuid: order.promoCode.uuid,
         name: order.promoCode.name,

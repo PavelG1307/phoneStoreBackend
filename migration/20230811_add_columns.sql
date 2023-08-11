@@ -1,0 +1,5 @@
+ALTER TABLE "Orders"
+    ADD COLUMN paymentTypeId INTEGER DEFAULT 0,
+    ADD COLUMN email TEXT,
+    ADD COLUMN payerTypeId  INTEGER DEFAULT 0,
+    ADD COLUMN comment TEXT
