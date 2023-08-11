@@ -6,9 +6,12 @@ import {
   UpdatedAt,
   CreatedAt,
   HasMany,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript'
 import { OrderItem } from './orderItem.model'
 import { UUID } from './types'
+import { PromoCode } from './promocode.model'
 
 @Table({
   modelName: 'Orders'
@@ -58,6 +61,16 @@ export class Order extends Model<Order> {
   })
   declare status?: number
 
+  @BelongsTo(() => PromoCode)
+  readonly promoCode: PromoCode;
+
+  @ForeignKey(() => PromoCode)
+  @Column({
+    type: DataType.UUID,
+    allowNull: true
+  })
+  declare promoCodeUUID?: UUID
+
   @Column({ type: DataType.DATE })
   @CreatedAt
   declare readonly createdAt?: Date
@@ -65,4 +78,24 @@ export class Order extends Model<Order> {
   @Column({ type: DataType.DATE })
   @UpdatedAt
   declare readonly updatedAt?: Date
+
+  @Column({
+    type: DataType.INTEGER
+  })
+  declare readonly paymentTypeId?: number
+
+  @Column({
+    type: DataType.TEXT
+  })
+  declare readonly email?: string
+
+  @Column({
+    type: DataType.INTEGER
+  })
+  declare readonly payerTypeId?: number
+
+  @Column({
+    type: DataType.TEXT
+  })
+  declare readonly comment?: string
 }

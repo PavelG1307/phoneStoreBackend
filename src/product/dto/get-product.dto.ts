@@ -1,5 +1,5 @@
-import { Transform, Type } from "class-transformer"
-import { IsArray, IsEnum, IsOptional, IsString } from "class-validator"
+import { Transform } from "class-transformer"
+import { IsEnum, IsOptional, IsString } from "class-validator"
 import { UUID } from "src/models/types"
 
 export class GetProductDto {
