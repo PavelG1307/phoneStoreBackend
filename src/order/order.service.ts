@@ -5,7 +5,7 @@ import { OrderItem } from "src/models/orderItem.model"
 import { Order } from "../models/order.model"
 import { UUID } from "../models/types"
 import { CreateOrderDto } from "./dto/create-order.dto"
-import { PromoCode } from "src/models/promoCode.model"
+import { PromoCode } from "src/models/promocode.model"
 import { PromoCodeService } from "src/promocode/promocode.service"
 
 @Injectable()

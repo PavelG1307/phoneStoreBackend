@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript'
 import { OrderItem } from './orderItem.model'
 import { UUID } from './types'
-import { PromoCode } from './promoCode.model'
+import { PromoCode } from './promocode.model'
 
 @Table({
   modelName: 'Orders'

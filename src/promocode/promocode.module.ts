@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { PromoCode } from 'src/models/promoCode.model';
+import { PromoCode } from 'src/models/promocode.model';
 import { UserModule } from 'src/user/user.module';
 import { PromoCodeController } from './promocode.controller';
 import { PromoCodeService } from './promocode.service';

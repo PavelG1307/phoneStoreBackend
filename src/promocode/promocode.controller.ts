@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RollbarHandler } from 'nestjs-rollbar';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { GetPromoCodeDto } from './dto/get-promoCode.dto';
-import { CreatePromoCodeDto } from './dto/create-promoCode.dto';
+import { GetPromoCodeDto } from './dto/get-promocode.dto';
+import { CreatePromoCodeDto } from './dto/create-promocode.dto';
 import { PromoCodeService } from './promocode.service';
-import { PromoCode } from 'src/models/promoCode.model';
+import { PromoCode } from 'src/models/promocode.model';
 
 @Controller('promocode')
 export class PromoCodeController {

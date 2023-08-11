@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
-import { PromoCode } from "src/models/promoCode.model"
+import { PromoCode } from "src/models/promocode.model"
 import { IPublicPromoCode } from "./types"
-import { CreatePromoCodeDto } from "./dto/create-promoCode.dto"
+import { CreatePromoCodeDto } from "./dto/create-promocode.dto"
 import { Op } from "sequelize"
 
 @Injectable()

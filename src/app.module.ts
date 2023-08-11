@@ -15,7 +15,7 @@ import { OrderModule } from './order/order.module';
 import { RefreshToken } from './models/refresh.token.model';
 import { LoggerModule } from 'nestjs-rollbar';
 import { StorageModule } from './storage/storage.module';
-import { PromoCode } from './models/promoCode.model';
+import { PromoCode } from './models/promocode.model';
 import { PromoCodeModule } from './promocode/promocode.module';
 
 @Module({
