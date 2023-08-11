@@ -5,25 +5,45 @@ import { OrderItem } from "src/models/orderItem.model"
 import { Order } from "../models/order.model"
 import { UUID } from "../models/types"
 import { CreateOrderDto } from "./dto/create-order.dto"
+import { PromoCode } from "src/models/promoCode.model"
+import { PromoCodeService } from "src/promocode/promocode.service"
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order)
-    private readonly OrderModel: typeof Order
+    private readonly OrderModel: typeof Order,
+    private readonly promoCodeService: PromoCodeService
   ) {}
 
   async get(uuid: UUID) {
-    const orders = await Order.findOne({ 
+    const order = await Order.findOne({ 
       where: { uuid },
-      include: [OrderItem]
+      include: [OrderItem, PromoCode]
     })
-    return orders
+    return {
+      uuid: order.uuid,
+      status: order.status,
+      fullName: order.fullName,
+      phoneNumber: order.phoneNumber,
+      items: order.items,
+      communicationMethod: order.communicationMethod,
+      delivery: order.delivery,
+      deliveryMessage: order.deliveryMessage,
+      promoCodeUUID: order.promoCodeUUID,
+      promoCode: order.promoCodeUUID && order.promoCode ? {
+        uuid: order.promoCode.uuid,
+        name: order.promoCode.name,
+        discount: order.promoCode.discount,
+      } : null,
+      updatedAt: order.updatedAt,
+      createdAt: order.createdAt,
+    }
   }
 
   async getAll() {
     const orders = Order.findAll({ 
-      include: [OrderItem]
+      include: [OrderItem, PromoCode]
     })
     return orders
   }
@@ -109,16 +129,50 @@ export class OrderService {
   }
 
   async create(orderDto: CreateOrderDto) {
-    console.log(orderDto);
-    const newOrder = Order.create({...orderDto}, {
-      returning: true,
-      include: [OrderItem]
-    })
-    return newOrder
+    const sequelize = Order.sequelize
+    const trx = await sequelize.transaction()
+
+    try {
+      if (orderDto.promoCodeUUID) {
+        const promoCode = await PromoCode.findOne({
+          where: {
+            uuid: orderDto.promoCodeUUID,
+            isDisabled: false,
+            isDeleted: false,
+          },
+          transaction: trx
+        })
+
+        this.promoCodeService.validatePromoCode(promoCode)
+
+        if (promoCode.quantity) {
+          await PromoCode.update({
+            quantity: promoCode.quantity - 1
+          }, {
+            where: {
+              uuid: promoCode.uuid
+            }
+          })
+        }
+      }
+
+      const newOrder = await Order.create({...orderDto, promoCode: undefined}, {
+        returning: true,
+        include: [OrderItem],
+        transaction: trx
+      })
+      
+      trx.commit()
+
+      return this.get(newOrder.uuid)
+    } catch (error) {
+      trx.rollback()
+      throw error
+    }
   }
 
-  async update(uuid: string, order: Partial<Order>) {
-    return Order.update(order, {
+  async update(uuid: string, Order: Partial<Order>) {
+    return Order.update(Order, {
       where: {
         uuid
       }
