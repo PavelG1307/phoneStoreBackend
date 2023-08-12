@@ -1,4 +1,5 @@
-import { IsEnum, IsOptional } from "class-validator"
+import { Transform } from "class-transformer"
+import { IsEnum, IsOptional, IsString } from "class-validator"
 import { UUID } from "src/models/types"
 
 export class GetProductDto {
@@ -10,8 +11,8 @@ export class GetProductDto {
   offset?: string
 
   @IsOptional()
-  @IsEnum(['price', 'createdAt'])
-  orderBy?: 'price' | 'createdAt'
+  @IsEnum(['price', 'createdAt', 'releaseAt', 'sortValue'])
+  orderBy?: 'price' | 'createdAt' | 'releaseAt' | 'sortValue'
 
   @IsOptional()
   @IsEnum(['DESC', 'ASC'])
@@ -19,4 +20,16 @@ export class GetProductDto {
 
   @IsOptional()
   readonly categoryUUID?: UUID
+
+  @IsOptional()
+  @Transform((params) => {
+    try {
+      return params.value.split(',')
+    } catch {
+      return params?.value
+    }
+  }
+  )
+  @IsString({ each: true })
+  readonly productUUIDs?: string[]
 }

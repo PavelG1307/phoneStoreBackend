@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
-import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING } from "src/core/constants"
+import { Op, WhereOptions } from "sequelize"
+import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING_PRODUCT } from "src/core/constants"
 import { Category } from "src/models/category.model"
 import { Product } from "../models/product.model"
 import { UUID } from "../models/types"
@@ -23,17 +24,17 @@ export class ProductService {
   }
 
   async getAll(filters: GetProductDto) {
-    const { categoryUUID, limit, offset, orderBy, order } = filters
-    console.log(limit, offset);
-    
-    const where: Partial<Product> = {
-        visible: true,
-      }
-      if (categoryUUID) where.categoryUUID = categoryUUID
-      
-    const products = Product.findAll({ 
-      where: { ... where},
-      order: [[orderBy || DEFAULT_SORTING.orderBy, order || DEFAULT_SORTING.order]],
+    const { productUUIDs, categoryUUID, limit, offset, orderBy, order } = filters
+    const where: WhereOptions<Product> = {
+      visible: true
+    }
+    if (categoryUUID) where.categoryUUID = categoryUUID
+    if (productUUIDs) where.uuid = {
+      [Op.in]: productUUIDs
+    }
+    const products = Product.findAll({
+      where: { ...where },
+      order: [[orderBy || DEFAULT_SORTING_PRODUCT.orderBy, order || DEFAULT_SORTING_PRODUCT.order], ['createdAt', 'DESC']],
       limit: Number(limit) || DEFAULT_LAZY_LOADING.limit,
       offset: Number(offset) || DEFAULT_LAZY_LOADING.offset,
       include: [Category]
@@ -41,6 +42,7 @@ export class ProductService {
     return products
   }
 
+  
   async create(product: CreateProductDto) {
     const newProduct = Product.create(product, {
       returning: true
@@ -49,7 +51,6 @@ export class ProductService {
   }
 
   async update(uuid: string, product: Partial<Product>) {
-    console.log(uuid)
     return Product.update(product, {
       where: { uuid },
       returning: true

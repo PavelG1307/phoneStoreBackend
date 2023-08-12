@@ -12,16 +12,16 @@ export class UserController {
   constructor(private readonly UserService: UserService) { }
 
   @Get()
-  @RollbarHandler()
   @UseGuards(JwtAuthGuard)
+  @RollbarHandler()
   getProfile(@Request() req) {
     return req.user;
   }
 
   @Post()
-  @RollbarHandler()
   @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @RollbarHandler()
   async create(@Body() user: CreateUserDto) {
     return this.UserService.create(user)
   }
