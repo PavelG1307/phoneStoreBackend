@@ -6,7 +6,7 @@ export function PrometheumMiddleware(
     res: Response,
     next: NextFunction
   ) {
-    if (req.path != '/metrics') {
+    if (req.path.includes('metrics')) {
         next()
         return
     }
