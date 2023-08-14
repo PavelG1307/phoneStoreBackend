@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
+import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
 import { Op } from "sequelize"
 import { OrderItem } from "src/models/orderItem.model"
@@ -21,35 +21,25 @@ export class OrderService {
       where: { uuid },
       include: [OrderItem, PromoCode]
     })
-    return {
-      uuid: order.uuid,
-      status: order.status,
-      fullName: order.fullName,
-      phoneNumber: order.phoneNumber,
-      items: order.items,
-      communicationMethod: order.communicationMethod,
-      delivery: order.delivery,
-      deliveryMessage: order.deliveryMessage,
-      promoCodeUUID: order.promoCodeUUID,
-      paymentTypeId: order.paymentTypeId,
-      email: order.email,
-      payerTypeId: order.payerTypeId,
-      comment: order.comment,
-      promoCode: order.promoCodeUUID && order.promoCode ? {
-        uuid: order.promoCode.uuid,
-        name: order.promoCode.name,
-        discount: order.promoCode.discount,
-      } : null,
-      updatedAt: order.updatedAt,
-      createdAt: order.createdAt,
+
+    if (!order) {
+      throw new BadRequestException('Order not found')
     }
+  
+    const costs = this.getOrderCosts(order)
+    
+    return this.formatOrder(order, costs)
   }
 
   async getAll() {
-    const orders = Order.findAll({ 
+    const orders = await Order.findAll({ 
       include: [OrderItem, PromoCode]
     })
-    return orders
+    
+    return orders.map(order => {
+      const costs = this.getOrderCosts(order)
+      return this.formatOrder(order, costs)
+    })
   }
 
   async getStatistics(opts: {
@@ -191,5 +181,49 @@ export class OrderService {
     })
     if (!success) throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
     return
+  }
+
+  private getOrderCosts(order: Order) {
+    if (!order || !order.items) {
+      return null
+    }
+
+    let cost = order.items.reduce((prevValue, item) => {
+      return prevValue + item.price * (item.count || 1)
+    }, 0)
+  
+    let costWithoutDiscount: number
+  
+    if (order.promoCode && order.promoCode.discount > 0 && order.promoCode.discount < 100) {
+      costWithoutDiscount = cost
+      cost  = Math.round(cost * (100 - order.promoCode.discount) / 100)
+    }
+
+    return { cost, costWithoutDiscount }
+  }
+  private formatOrder(order: Order, costs) {
+    return {
+      uuid: order.uuid,
+      status: order.status,
+      fullName: order.fullName,
+      phoneNumber: order.phoneNumber,
+      items: order.items,
+      communicationMethod: order.communicationMethod,
+      delivery: order.delivery,
+      deliveryMessage: order.deliveryMessage,
+      promoCodeUUID: order.promoCodeUUID,
+      paymentTypeId: order.paymentTypeId,
+      email: order.email,
+      payerTypeId: order.payerTypeId,
+      comment: order.comment,
+      promoCode: order.promoCodeUUID && order.promoCode ? {
+        uuid: order.promoCode.uuid,
+        name: order.promoCode.name,
+        discount: order.promoCode.discount,
+      } : null,
+      updatedAt: order.updatedAt,
+      createdAt: order.createdAt,
+      costs
+    }
   }
 }
