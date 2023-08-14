@@ -7,6 +7,7 @@ import { corsOptions } from './core/config/cors'
 import { initSwagger } from './core/lib/swagger'
 import { EXIT_CODES } from './core/constants'
 import * as cookieParser from 'cookie-parser';
+import { PrometheumMiddleware } from './prometheus/prometheum.middlewares'
 
 async function bootstrap() {
   try {
@@ -21,6 +22,7 @@ async function bootstrap() {
     app.use(cookieParser());
     app.use(compression())
     app.use(helmet())
+    app.use(PrometheumMiddleware)
 
     initSwagger(app)
     console.log('Started')
