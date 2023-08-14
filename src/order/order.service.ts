@@ -7,6 +7,7 @@ import { UUID } from "../models/types"
 import { CreateOrderDto } from "./dto/create-order.dto"
 import { PromoCode } from "src/models/promocode.model"
 import { PromoCodeService } from "src/promocode/promocode.service"
+import { GetOrderDto } from "./dto/get-order.dto"
 
 @Injectable()
 export class OrderService {
@@ -19,7 +20,7 @@ export class OrderService {
   async get(uuid: UUID) {
     const order = await Order.findOne({ 
       where: { uuid },
-      include: [OrderItem, PromoCode]
+      include: [OrderItem, PromoCode],
     })
     return {
       uuid: order.uuid,
@@ -45,9 +46,14 @@ export class OrderService {
     }
   }
 
-  async getAll() {
+  async getAll(params: GetOrderDto) {
+    const { limit, offset, orderBy, order } = params
+    
     const orders = Order.findAll({ 
-      include: [OrderItem, PromoCode]
+      include: [OrderItem, PromoCode],
+      order: [[orderBy, order]],
+      limit: Number(limit),
+      offset: Number(offset),
     })
     return orders
   }

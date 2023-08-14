@@ -5,6 +5,7 @@ import { Order } from '../models/order.model';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetStatisticsDto } from './dto/get-statistics.dto';
 import { OrderService } from './order.service';
+import { GetOrderDto } from './dto/get-order.dto';
 
 @Controller('order')
 
@@ -27,8 +28,15 @@ export class OrderController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @RollbarHandler({ rethrow: true })
-  async getAll() {
-    return this.OrderService.getAll()
+  async getAll(@Query() query: GetOrderDto) {
+    const params = {
+      order: query.order || 'DESC',
+      orderBy: query.orderBy || 'createdAt',
+      limit: query.limit || '10000',
+      offset: query.offset || '0',
+    }
+
+    return this.OrderService.getAll(params)
   }
 
   @Post()
