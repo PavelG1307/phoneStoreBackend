@@ -1,9 +1,13 @@
+import { Injectable } from "@nestjs/common"
 import * as client from 'prom-client'
 import { CategoryService } from 'src/category/category.service';
 
+@Injectable()
 export class PrometheumService {
 
     private static categoriesWithDistribution = new Map<string, number>;
+    private static categoriesUuidToName = new Map(CategoryService.categories.map(category => [category.uuid, category.name]));
+    private static categoriesNames = CategoryService.categories.map(category => category.name)
 
     public static activeUsersPerCategoryMetric(registry) {
         const gauge = new client.Gauge({
@@ -16,9 +20,7 @@ export class PrometheumService {
         });
 
         async function collectActiveUsers() {
-            const categoriesNames = CategoryService.categories.map(category => category.name)
-            
-            for (const category of categoriesNames){
+            for (const category of PrometheumService.categoriesNames){
                 let value = 0
                 if (PrometheumService.categoriesWithDistribution.has(category)) {
                     value = PrometheumService.categoriesWithDistribution.get(category)
@@ -30,7 +32,8 @@ export class PrometheumService {
           setInterval(collectActiveUsers, 5000);
     }
 
-    public static incUsersPerCategoryMetric(categoryName: string) {
+    public static incUsersPerCategoryMetric(categoryUuid: string) {
+        const categoryName = this.categoriesUuidToName.get(categoryUuid)
         if (!PrometheumService.categoriesWithDistribution.has(categoryName)) {
             PrometheumService.categoriesWithDistribution.set(categoryName, 1)
             return

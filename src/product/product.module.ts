@@ -5,12 +5,14 @@ import { Order } from '../models/order.model';
 import { Product } from '../models/product.model';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
+import { PrometheumModule } from 'src/prometheus/prometheum.module';
 
 @Module({
     controllers: [ProductController],
     providers: [ProductService],
     imports: [
         SequelizeModule.forFeature([Product, Order]),
-        UserModule
+        UserModule,
+        PrometheumModule,
     ]})
 export class ProductModule {}
