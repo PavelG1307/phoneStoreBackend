@@ -9,15 +9,28 @@ export class PrometheumService {
     private static categoriesUuidToName = new Map(CategoryService.categories.map(category => [category.uuid, category.name]));
     private static categoriesNames = CategoryService.categories.map(category => category.name)
 
+    private static PromCounterStatusCodes = new Map<number, number>;
+    private static PromCounterErrors = 0;
+
     public static activeUsersPerCategoryMetric(registry) {
-        const gauge = new client.Gauge({
+        const gaugeUsers = new client.Gauge({
             name: 'active_users',
             help: 'Amount of active users right now per category',
             registers: [registry],
             labelNames: [
-                'category',
+                'category'
             ],
         });
+
+        const gaugeRequest= new client.Gauge({
+          name: 'requests',
+          help: 'Amount of requests',
+          registers: [registry],
+          labelNames: [
+              'statusCode',
+              'error'
+          ],
+      });
 
         async function collectActiveUsers() {
             for (const category of PrometheumService.categoriesNames){
@@ -25,8 +38,15 @@ export class PrometheumService {
                 if (PrometheumService.categoriesWithDistribution.has(category)) {
                     value = PrometheumService.categoriesWithDistribution.get(category)
                 }
-                gauge.set({ category }, value);
+                gaugeUsers.set({ category }, value);
             }
+
+            for (const statusCode of PrometheumService.PromCounterStatusCodes.keys()){
+              const value = PrometheumService.PromCounterStatusCodes.get(statusCode)
+              gaugeRequest.set({ statusCode }, value);
+            }
+
+            gaugeRequest.set({ error: 'error' }, PrometheumService.PromCounterErrors);
           }
           
           setInterval(collectActiveUsers, 5000);
@@ -39,7 +59,20 @@ export class PrometheumService {
             return
         }
         const prevValue = PrometheumService.categoriesWithDistribution.get(categoryName)
-        PrometheumService.categoriesWithDistribution.set(categoryName, prevValue + 1)
-        
+        PrometheumService.categoriesWithDistribution.set(categoryName, prevValue + 1) 
     }
+
+    public static incStatusCodeMetric(statusCode: number) {
+      if (!PrometheumService.PromCounterStatusCodes.has(statusCode)) {
+          PrometheumService.PromCounterStatusCodes.set(statusCode, 1)
+          return
+      }
+      const prevValue = PrometheumService.PromCounterStatusCodes.get(statusCode)
+      PrometheumService.PromCounterStatusCodes.set(statusCode, prevValue + 1)
+      
+  }
+
+  public static incErrorMetric() {
+    PrometheumService.PromCounterErrors++
+  }
 }
