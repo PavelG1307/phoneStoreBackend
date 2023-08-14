@@ -17,7 +17,7 @@ async function bootstrap() {
       }),
     )
     app.enableCors(corsOptions)
-    app.setGlobalPrefix(process.env.API_PREFIX)
+    app.setGlobalPrefix(process.env.API_PREFIX, { exclude: ['metrics'] })
     app.use(cookieParser());
     app.use(compression())
     app.use(helmet())

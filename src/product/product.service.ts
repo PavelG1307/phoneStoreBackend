@@ -7,6 +7,7 @@ import { Product } from "../models/product.model"
 import { UUID } from "../models/types"
 import { CreateProductDto } from "./dto/create-product.dto"
 import { GetProductDto } from "./dto/get-product.dto"
+import { PrometheumService } from "src/prometheus/prometheum.service"
 
 @Injectable()
 export class ProductService {
@@ -28,7 +29,10 @@ export class ProductService {
     const where: WhereOptions<Product> = {
       visible: true
     }
-    if (categoryUUID) where.categoryUUID = categoryUUID
+    if (categoryUUID) {
+      where.categoryUUID = categoryUUID
+      PrometheumService.incUsersPerCategoryMetric(categoryUUID)
+    }
     if (productUUIDs) where.uuid = {
       [Op.in]: productUUIDs
     }

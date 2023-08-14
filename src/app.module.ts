@@ -17,6 +17,7 @@ import { LoggerModule } from 'nestjs-rollbar';
 import { StorageModule } from './storage/storage.module';
 import { PromoCode } from './models/promocode.model';
 import { PromoCodeModule } from './promocode/promocode.module';
+import { PrometheumModule } from './prometheus/prometheum.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { PromoCodeModule } from './promocode/promocode.module';
     OrderModule,
     StorageModule,
     PromoCodeModule,
+    PrometheumModule,
   ]
 })
 export class AppModule {}
