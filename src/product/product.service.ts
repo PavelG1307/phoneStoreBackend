@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { BadRequestException, Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
 import { Op, WhereOptions } from "sequelize"
 import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING_PRODUCT } from "src/core/constants"
@@ -48,20 +48,30 @@ export class ProductService {
 
   
   async create(product: CreateProductDto) {
-    const newProduct = Product.create(product, {
+    const newProduct = await Product.create(product, {
       returning: true
     })
     return newProduct
   }
 
   async update(uuid: string, product: Partial<Product>) {
-    return Product.update(product, {
+    if (!uuid) {
+      throw new BadRequestException('UUID - обязательный параметр')
+    }
+    const [count, updatedProduct] = await Product.update(product, {
       where: { uuid },
       returning: true
     })
+    if (count != 1) {
+      throw new BadRequestException('Ошибка изменения товара')
+    }
+    return updatedProduct[0]
   }
 
   async delete(uuid: string) {
+    if (!uuid) {
+      throw new BadRequestException('UUID - обязательный параметр')
+    }
     return Product.destroy({ where: { uuid } })
   }
 }
