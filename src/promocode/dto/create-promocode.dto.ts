@@ -9,7 +9,6 @@ export class CreatePromoCodeDto {
     name: string
 
     @IsNumber()
-    @Max(99)
     @Min(1)
     discount: number
 

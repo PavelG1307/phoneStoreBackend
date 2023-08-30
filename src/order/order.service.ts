@@ -205,9 +205,11 @@ export class OrderService {
   
     let costWithoutDiscount: number
   
-    if (order.promoCode && order.promoCode.discount > 0 && order.promoCode.discount < 100) {
+    if (order.promoCode && order.promoCode.discount > 0) {
       costWithoutDiscount = cost
-      cost  = Math.round(cost * (100 - order.promoCode.discount) / 100)
+      cost = cost > order.promoCode.discount
+        ? cost - order.promoCode.discount
+        : 0;
     }
 
     return { cost, costWithoutDiscount }
