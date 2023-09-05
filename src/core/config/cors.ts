@@ -12,7 +12,7 @@ export const corsOptions: CorsOptions = {
     'http://127.0.0.1:3000',
     'http://localhost:3000',
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
