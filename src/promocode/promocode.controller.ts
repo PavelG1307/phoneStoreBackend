@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RollbarHandler } from 'nestjs-rollbar';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { GetPromoCodeDto } from './dto/get-promocode.dto';
@@ -30,7 +30,7 @@ export class PromoCodeController {
     return this.PromoCodeService.create(promoCode)
   }
 
-  @Patch(':uuid')
+  @Put(':uuid')
   @UseGuards(JwtAuthGuard)
   @RollbarHandler({ rethrow: true })
   async update(@Param('uuid') uuid: string, @Body() promoCode: Partial<PromoCode>) {
