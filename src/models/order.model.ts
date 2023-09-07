@@ -80,6 +80,12 @@ export class Order extends Model<Order> {
   declare readonly updatedAt?: Date
 
   @Column({
+    type: DataType.DATE,
+    allowNull: true
+  })
+  declare readonly deletedAt?: Date
+
+  @Column({
     type: DataType.INTEGER
   })
   declare readonly paymentTypeId?: number

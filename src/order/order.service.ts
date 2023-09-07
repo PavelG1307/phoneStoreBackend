@@ -19,7 +19,7 @@ export class OrderService {
 
   async get(uuid: UUID) {
     const order = await Order.findOne({ 
-      where: { uuid },
+      where: { uuid, deletedAt: null },
       include: [OrderItem, PromoCode],
     })
 
@@ -36,6 +36,7 @@ export class OrderService {
     const { limit, offset, orderBy, order } = params
 
     const orders = await Order.findAll({ 
+      where: { deletedAt: null },
       include: [OrderItem, PromoCode],
       order: [[orderBy == 'cost' ? 'createdAt' : orderBy, order]],
       limit: Number(limit),
@@ -179,17 +180,14 @@ export class OrderService {
   async update(uuid: string, order: Partial<Order>) {
     return Order.update(order, {
       where: {
-        uuid
+        uuid,
+        deletedAt: null
       }
     })
   }
 
   async delete(uuid: string) {
-    const success =  await Order.destroy({
-      where: {
-        uuid
-      }
-    })
+    const success = await Order.update({ deletedAt: new Date() }, { where: { uuid } })
     if (!success) throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
     return
   }
