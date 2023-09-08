@@ -8,13 +8,15 @@ import { CreateOrderDto } from "./dto/create-order.dto"
 import { PromoCode } from "src/models/promocode.model"
 import { PromoCodeService } from "src/promocode/promocode.service"
 import { GetOrderDto } from "./dto/get-order.dto"
+import { NotificationService } from "src/notification/notification.service"
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order)
     private readonly OrderModel: typeof Order,
-    private readonly promoCodeService: PromoCodeService
+    private readonly promoCodeService: PromoCodeService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async get(uuid: UUID) {
@@ -169,6 +171,15 @@ export class OrderService {
       })
       
       trx.commit()
+
+      try {
+        this.notificationService.notify(
+          NotificationService.NotificationTypes.CREATED_ORDER.id,
+          newOrder,
+        )
+      } catch (e) {
+        console.error(e)
+      }
 
       return this.get(newOrder.uuid)
     } catch (error) {
