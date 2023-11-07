@@ -1,19 +1,20 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { RollbarHandler } from 'nestjs-rollbar';
+import { Body, Controller, Get, NotFoundException, Param, Patch, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ParamService } from './params.service';
-import { NotFoundError } from 'rxjs';
 import { UpdateParamDto } from './dto/update-param.dto';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { GetParamResponseDto } from './dto/get-param.dto';
+import { PARAM_NAMES } from './types';
 
-@Controller('order')
-
+@ApiTags('Param')
+@ApiCookieAuth()
+@Controller('param')
 export class ParamController {
   constructor(private readonly paramService: ParamService) { }
 
   @Get(':name')
   @UseGuards(JwtAuthGuard)
-  @RollbarHandler({ rethrow: true })
-  async getParam(@Param('name') name: string) {
+  async getParam(@Param('name') name: PARAM_NAMES): Promise<GetParamResponseDto> {
     const param = await this.paramService.getOne(name)
     if (!param) {
       throw new NotFoundException('Param not found')
@@ -23,8 +24,7 @@ export class ParamController {
 
   @Patch(':name')
   @UseGuards(JwtAuthGuard)
-  @RollbarHandler({ rethrow: true })
-  async updateParam(@Param('name') name: string, @Body() param: UpdateParamDto) {
+  async updateParam(@Param('name') name: PARAM_NAMES, @Body() param: UpdateParamDto): Promise<GetParamResponseDto> {
     const { value } = param;
     const updatedParam = await this.paramService.update(name, value)
     if (!updatedParam) {

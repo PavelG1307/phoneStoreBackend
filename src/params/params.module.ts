@@ -12,4 +12,5 @@ import { ParamController } from './params.controller';
         SequelizeModule.forFeature([Param]),
         UserModule
     ]})
+
 export class ParamModule {}

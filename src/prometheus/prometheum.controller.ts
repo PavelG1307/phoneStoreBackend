@@ -1,10 +1,10 @@
 import { Controller, Get, Next, Res } from '@nestjs/common';
-import { RollbarHandler } from 'nestjs-rollbar';
 import { PrometheumService } from './prometheum.service';
 import { Registry } from 'prom-client'
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Metric')
 @Controller('metrics')
-
 export class PrometheumController {
   private registry = new Registry()
 
@@ -15,7 +15,6 @@ export class PrometheumController {
   }
 
   @Get()
-  @RollbarHandler({ rethrow: true })
   async getStatistics(@Res() res, @Next() next) {
     res.set('Content-Type', this.registry.contentType);
     const metrics = await this.registry.metrics()

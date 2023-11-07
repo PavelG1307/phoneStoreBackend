@@ -1,7 +1,7 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common"
+import { Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
 import { Param } from "src/models/param.model"
-import { IGetParamResponse } from "./dto/get-param.dto"
+import { GetParamResponseDto } from "./dto/get-param.dto"
 
 @Injectable()
 export class ParamService {
@@ -10,7 +10,7 @@ export class ParamService {
     private readonly ParamModel: typeof Param
   ) {}
 
-  public async getOne(name: string): Promise<IGetParamResponse> {
+  public async getOne(name: string): Promise<GetParamResponseDto> {
     const param = await Param.findOne({ where: { name } })
     if (!param) {
       return null
@@ -22,7 +22,7 @@ export class ParamService {
     }
   }
 
-  public async update(name: string, value: string): Promise<IGetParamResponse> {
+  public async update(name: string, value: string): Promise<GetParamResponseDto> {
     await Param.update({ value }, { where: { name } })
     return this.getOne(name)
   }

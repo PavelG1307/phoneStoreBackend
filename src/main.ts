@@ -8,7 +8,6 @@ import { initSwagger } from './core/lib/swagger'
 import { EXIT_CODES } from './core/constants'
 import * as cookieParser from 'cookie-parser';
 import { PrometheumMiddleware } from './prometheus/prometheum.middlewares'
-import { QueueService } from './queue/queue.service'
 
 async function bootstrap() {
   try {

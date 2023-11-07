@@ -6,6 +6,7 @@ import {
   UpdatedAt,
   CreatedAt,
 } from 'sequelize-typescript'
+import { PARAM_NAMES } from 'src/params/types'
 
 @Table({
   tableName: 'Params',
@@ -13,10 +14,7 @@ import {
 })
 
 export class Param extends Model<Param> {
-  public static ParamNames = {
-    TELEGRAM_CHAT_ID: 'telegram_chat_id',
-    POPUP_MESSAGE: 'popup_message'
-  }
+  public static ParamNames = PARAM_NAMES
 
   @Column({
     type: DataType.STRING,

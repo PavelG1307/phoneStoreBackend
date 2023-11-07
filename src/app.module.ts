@@ -20,6 +20,7 @@ import { PromoCodeModule } from './promocode/promocode.module';
 import { PrometheumModule } from './prometheus/prometheum.module';
 import { QueueModule } from './queue/queue.module';
 import { Param } from './models/param.model';
+import { ParamModule } from './params/params.module';
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { Param } from './models/param.model';
     StorageModule,
     PromoCodeModule,
     PrometheumModule,
-    QueueModule
+    QueueModule,
+    ParamModule,
   ]
 })
 export class AppModule {}
