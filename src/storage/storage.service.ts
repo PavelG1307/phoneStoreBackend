@@ -34,7 +34,7 @@ export class StorageService {
 
   async upload(file: Express.Multer.File) {
     if (file?.mimetype.split('/')[0] != 'image') {
-      throw new HttpException('Invalid image', HttpStatus.BAD_REQUEST)
+      // throw new HttpException('Invalid image', HttpStatus.BAD_REQUEST)
     }
     const fileName = uuid.v4()
     const image = await sharp(file.buffer).webp().toBuffer()
