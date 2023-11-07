@@ -2,7 +2,7 @@ import { Body, Controller, Get, NotFoundException, Param, Patch, UseGuards } fro
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ParamService } from './params.service';
 import { UpdateParamDto } from './dto/update-param.dto';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { GetParamResponseDto } from './dto/get-param.dto';
 import { PARAM_NAMES } from './types';
 
@@ -11,8 +11,9 @@ import { PARAM_NAMES } from './types';
 @Controller('param')
 export class ParamController {
   constructor(private readonly paramService: ParamService) { }
-
+  
   @Get(':name')
+  @ApiParam({ name: 'name', description: 'Название параметра', enum: PARAM_NAMES })
   @UseGuards(JwtAuthGuard)
   async getParam(@Param('name') name: PARAM_NAMES): Promise<GetParamResponseDto> {
     const param = await this.paramService.getOne(name)
@@ -23,6 +24,7 @@ export class ParamController {
   }
 
   @Patch(':name')
+  @ApiParam({ name: 'name', description: 'Название параметра', enum: PARAM_NAMES })
   @UseGuards(JwtAuthGuard)
   async updateParam(@Param('name') name: PARAM_NAMES, @Body() param: UpdateParamDto): Promise<GetParamResponseDto> {
     const { value } = param;

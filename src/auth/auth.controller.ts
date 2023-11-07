@@ -4,7 +4,8 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { LocalAuthGuard } from './guard/local.auth.guard';
 import { cookieConstants } from '../core/constants'
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dto/auth.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -14,6 +15,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @ApiBody({ type: LoginDto })
   @UseGuards(LocalAuthGuard)
   async login(@Req() req, @Res({ passthrough: true }) response: Response) {
     const tokens = await this.authService.createTokens(req.user.uuid)
