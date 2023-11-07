@@ -14,7 +14,8 @@ import {
 
 export class Param extends Model<Param> {
   public static ParamNames = {
-    TELEGRAM_CHAT_ID: 'telegram_chat_id'
+    TELEGRAM_CHAT_ID: 'telegram_chat_id',
+    POPUP_MESSAGE: 'popup_message'
   }
 
   @Column({
