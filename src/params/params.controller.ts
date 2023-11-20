@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ParamService } from './params.service';
 import { UpdateParamDto } from './dto/update-param.dto';
@@ -23,7 +23,7 @@ export class ParamController {
     return param
   }
 
-  @Patch(':name')
+  @Put(':name')
   @ApiParam({ name: 'name', description: 'Название параметра', enum: PARAM_NAMES })
   @UseGuards(JwtAuthGuard)
   async updateParam(@Param('name') name: PARAM_NAMES, @Body() param: UpdateParamDto): Promise<GetParamResponseDto> {
