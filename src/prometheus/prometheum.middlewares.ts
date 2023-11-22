@@ -13,9 +13,6 @@ export function PrometheumMiddleware(
 
     res.on('finish', () => {
         PrometheumService.incStatusCodeMetric(res.statusCode)
-        if (res.statusCode !== 200) {
-            PrometheumService.incErrorMetric()
-        }
     })
     next()
   }

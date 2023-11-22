@@ -10,7 +10,7 @@ export class PrometheumService {
     private static categoriesNames = CategoryService.categories.map(category => category.name)
 
     private static PromCounterStatusCodes = new Map<number, number>;
-    private static PromCounterErrors = 0;
+    private static PromCounterOrders = 0;
 
     public static activeUsersPerCategoryMetric(registry) {
         const gaugeUsers = new client.Gauge({
@@ -28,9 +28,15 @@ export class PrometheumService {
           registers: [registry],
           labelNames: [
               'statusCode',
-              'error'
           ],
-      });
+        });
+
+        const gaugeOrders = new client.Gauge({
+            name: 'orders',
+            help: 'Amount of orders',
+            registers: [registry],
+            labelNames: [],
+          });
 
         async function collectActiveUsers() {
             for (const category of PrometheumService.categoriesNames){
@@ -46,10 +52,11 @@ export class PrometheumService {
               gaugeRequest.set({ statusCode }, value);
             }
 
-            gaugeRequest.set({ error: 'error' }, PrometheumService.PromCounterErrors);
-          }
+            gaugeOrders.set({ }, PrometheumService.PromCounterOrders);
+
+        }
           
-          setInterval(collectActiveUsers, 5000);
+        setInterval(collectActiveUsers, 5000);
     }
 
     public static incUsersPerCategoryMetric(categoryUuid: string) {
@@ -69,10 +76,9 @@ export class PrometheumService {
       }
       const prevValue = PrometheumService.PromCounterStatusCodes.get(statusCode)
       PrometheumService.PromCounterStatusCodes.set(statusCode, prevValue + 1)
-      
-  }
+    }
 
-  public static incErrorMetric() {
-    PrometheumService.PromCounterErrors++
-  }
+    public static incOrderMetric() {
+        PrometheumService.PromCounterOrders++
+    }
 }

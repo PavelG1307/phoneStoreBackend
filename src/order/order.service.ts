@@ -9,6 +9,7 @@ import { PromoCode } from "src/models/promocode.model"
 import { PromoCodeService } from "src/promocode/promocode.service"
 import { GetOrderDto } from "./dto/get-order.dto"
 import { NotificationService } from "src/notification/notification.service"
+import { PrometheumService } from "src/prometheus/prometheum.service"
 
 @Injectable()
 export class OrderService {
@@ -172,6 +173,7 @@ export class OrderService {
       
       trx.commit()
 
+      PrometheumService.incOrderMetric()
       try {
         this.notificationService.notify(
           NotificationService.NotificationTypes.CREATED_ORDER.id,
