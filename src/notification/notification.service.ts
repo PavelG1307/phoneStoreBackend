@@ -3,6 +3,7 @@ import { NotificationProvider, NotificationType } from './types'
 import { InjectModel } from '@nestjs/sequelize';
 import { Param } from 'src/models/param.model';
 import { QueueService } from 'src/queue/queue.service';
+import { PrometheumService } from 'src/prometheus/prometheum.service';
 @Injectable()
 export class NotificationService {
     constructor(
@@ -62,6 +63,7 @@ export class NotificationService {
             return
         }
 
+        PrometheumService.incNotificationMetric('Telegram')
         this.queueService.send(messageData, NotificationService.NotificationProviders.TELEGRAM.queueName)
     }
 
@@ -75,10 +77,8 @@ export class NotificationService {
                 return { message, telegramChatId }
                 break;
             case NotificationService.NotificationTypes.UPDATED_ORDER.id:
-                console.log(notificationTypeId);
                 break;
             case NotificationService.NotificationTypes.DELETED_ORDER.id:
-                console.log(notificationTypeId);
                 break;
         }
         return { message, telegramChatId }

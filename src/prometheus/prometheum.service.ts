@@ -10,6 +10,7 @@ export class PrometheumService {
     private static categoriesNames = CategoryService.categories.map(category => category.name)
 
     private static PromCounterStatusCodes = new Map<number, number>;
+    private static PromCounterNotifications = new Map<string, number>;
     private static PromCounterOrders = 0;
 
     public static activeUsersPerCategoryMetric(registry) {
@@ -36,7 +37,14 @@ export class PrometheumService {
             help: 'Amount of orders',
             registers: [registry],
             labelNames: [],
-          });
+        });
+
+        const gaugeNotification = new client.Gauge({
+            name: 'notifications',
+            help: 'Amount of notifications',
+            registers: [registry],
+            labelNames: [ 'type' ],
+        });
 
         async function collectActiveUsers() {
             for (const category of PrometheumService.categoriesNames){
@@ -50,6 +58,11 @@ export class PrometheumService {
             for (const statusCode of PrometheumService.PromCounterStatusCodes.keys()){
               const value = PrometheumService.PromCounterStatusCodes.get(statusCode)
               gaugeRequest.set({ statusCode }, value);
+            }
+
+            for (const type of PrometheumService.PromCounterNotifications.keys()){
+                const value = PrometheumService.PromCounterNotifications.get(type)
+                gaugeNotification.set({ type }, value);
             }
 
             gaugeOrders.set({ }, PrometheumService.PromCounterOrders);
@@ -76,6 +89,15 @@ export class PrometheumService {
       }
       const prevValue = PrometheumService.PromCounterStatusCodes.get(statusCode)
       PrometheumService.PromCounterStatusCodes.set(statusCode, prevValue + 1)
+    }
+
+    public static incNotificationMetric(type: string) {
+        if (!PrometheumService.PromCounterNotifications.has(type)) {
+            PrometheumService.PromCounterNotifications.set(type, 1)
+            return
+        }
+        const prevValue = PrometheumService.PromCounterNotifications.get(type)
+        PrometheumService.PromCounterNotifications.set(type, prevValue + 1)
     }
 
     public static incOrderMetric() {
