@@ -56,6 +56,21 @@ export class NotificationService {
         },
     ];
 
+    public static PaymentTypes = [
+        {
+          id: 1,
+          name: 'Наличными при получении',
+        },
+        {
+          id: 2,
+          name: 'Оформление рассрочки',
+        },
+        {
+          id: 3,
+          name: 'Безналичный расчет для юридических лиц без НДС',
+        },
+    ];
+
     public async notify(notificationTypeId: number, data: any) {
         const messageData = await this.getDataForNotification(notificationTypeId, data)
         if (!messageData.telegramChatId) {
@@ -75,7 +90,6 @@ export class NotificationService {
                 message = this.getMessageForCreatedProduct(data);
                 telegramChatId = await this.getTelegramChatId();
                 return { message, telegramChatId }
-                break;
             case NotificationService.NotificationTypes.UPDATED_ORDER.id:
                 break;
             case NotificationService.NotificationTypes.DELETED_ORDER.id:
@@ -85,7 +99,7 @@ export class NotificationService {
     }
 
     private getMessageForCreatedProduct(data: any): string {
-        const { fullName, phoneNumber, delivery, deliveryMessage, email, comment } = data
+        const { fullName, phoneNumber, delivery, deliveryMessage, email, comment, paymentTypeId } = data
         const productNames = data.items.map((item) => {
             const tagsData = !item.tags || item.tags.length === 0 ? ' ' : ` (${item.tags.join(', ')})`
             return `${item.name}${tagsData} - ${item.price} рублей`
@@ -93,7 +107,22 @@ export class NotificationService {
 
         const deliveryVariant = NotificationService.DeliveryVariants.find(v => v.id === delivery)
         const deliveryName = deliveryVariant ? deliveryVariant.name : 'неизвестно'
-        return `**Новый заказ!**\nФИО: ${fullName}\nНомер телефона: ${phoneNumber}\nEmail: ${email || '-'}\n\nТовары:\n${productNames}\n\nСпособ доставки: ${deliveryName}\nИнформация о доставке: ${deliveryMessage || '-'}\nКомментарий к заказу: ${comment || '-'}`
+
+        const paymentType = NotificationService.PaymentTypes.find(v => v.id === paymentTypeId)
+        const paymentTypeName = paymentType ? paymentType.name : 'неизвестно'
+
+        return `
+**Новый заказ!**
+ФИО: ${fullName}
+Номер телефона: ${phoneNumber}
+Email: ${email || '-'}
+            
+Товары:\n${productNames}
+Способ доставки: ${deliveryName}
+Информация о доставке: ${deliveryMessage || '-'}
+Способ оплаты: ${paymentTypeName || '-'}
+Комментарий к заказу: ${comment || '-'}
+`
     }
 
     private async getTelegramChatId(): Promise<string> {
