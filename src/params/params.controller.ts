@@ -12,6 +12,15 @@ import { PARAM_NAMES } from './types';
 export class ParamController {
   constructor(private readonly paramService: ParamService) { }
   
+  @Get(PARAM_NAMES.POPUP_MESSAGE)
+  async getPopupMessage(): Promise<GetParamResponseDto> {
+    const param = await this.paramService.getOne(PARAM_NAMES.POPUP_MESSAGE)
+    if (!param) {
+      throw new NotFoundException('Param not found')
+    }
+    return param
+  }
+
   @Get(':name')
   @ApiParam({ name: 'name', description: 'Название параметра', enum: PARAM_NAMES })
   @UseGuards(JwtAuthGuard)
