@@ -10,6 +10,9 @@ import { PromoCodeService } from "src/promocode/promocode.service"
 import { GetOrderDto } from "./dto/get-order.dto"
 import { NotificationService } from "src/notification/notification.service"
 import { PrometheumService } from "src/prometheus/prometheum.service"
+import { PromoCodeFilter } from "src/promocode/dto/get-promocode.dto"
+import { Product } from "src/models/product.model"
+import { PromoCodeCategory } from "src/models/promocodeCategory.model"
 
 @Injectable()
 export class OrderService {
@@ -140,8 +143,28 @@ export class OrderService {
   async create(orderDto: CreateOrderDto) {
     const sequelize = Order.sequelize
     const trx = await sequelize.transaction()
-
+  
     try {
+      const products: Pick<Product, 'uuid' | 'categoryUUID' | 'variants' | 'options' | 'price'>[] = await Product.findAll({
+        where: {
+          uuid: {
+            [Op.in]: orderDto.items.map(i => i.productUUID)
+          }
+        },
+        attributes: ['uuid', 'categoryUUID', 'variants', 'options', 'price'],
+        transaction: trx
+      })
+
+      const items: OrderItem[] = orderDto.items
+        .filter((item) =>
+          products.some(p => p.uuid === item.productUUID)
+        )
+        .map((old) => {
+        const product = products.find(p => p.uuid === old.productUUID)
+        old.price = this.getPrice(product, old.tags)
+        return old
+      })
+  
       if (orderDto.promoCodeUUID) {
         const promoCode = await PromoCode.findOne({
           where: {
@@ -149,10 +172,14 @@ export class OrderService {
             isDisabled: false,
             isDeleted: false,
           },
+          include: [PromoCodeCategory],
           transaction: trx
         })
 
-        this.promoCodeService.validatePromoCode(promoCode)
+        
+        const categoryUUIDs = products.map(p => p.categoryUUID);
+        const promoCodeFilter: PromoCodeFilter = { categoryUUIDs };
+        this.promoCodeService.validatePromoCode(promoCode, promoCodeFilter)
 
         if (promoCode.quantity) {
           await PromoCode.update({
@@ -165,7 +192,7 @@ export class OrderService {
         }
       }
 
-      const newOrder = await Order.create({...orderDto, promoCode: undefined}, {
+      const newOrder = await Order.create({...orderDto, items, promoCode: undefined}, {
         returning: true,
         include: [OrderItem],
         transaction: trx
@@ -249,5 +276,21 @@ export class OrderService {
       createdAt: order.createdAt,
       costs
     }
+  }
+
+  private getPrice(product: Pick<Product, 'variants' | 'options' | 'price'>, tags: string[]) {
+    if (tags.length === 0 && product.variants.length !== 0) {
+      throw new BadRequestException('Tags is invalid')
+    }
+    if (tags.length === 0) {
+      return product.price;
+    }
+    const options = product.options.map(o => o.items.find(item => tags.includes(item.name)))
+    const optionsIds = options.filter(Boolean).map(o => o.id)
+    const variant = product.variants.find(v => v.optionsIds && v.optionsIds.every(id => optionsIds.includes(id)))
+    if (!variant) {
+      throw new BadRequestException('Variant not found')
+    }
+    return variant.optionsInfo.price || product.price
   }
 }

@@ -13,7 +13,7 @@ export class PromoCodeController {
 
   @Get()
   async get(@Query(new ValidationPipe({ transform: true })) query: GetPromoCodeDto) {
-    return this.PromoCodeService.get(query.name)
+    return this.PromoCodeService.get(query.name, { categoryUUIDs: query.categoryUUIDs })
   }
 
   @Get('all')

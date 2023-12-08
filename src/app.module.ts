@@ -21,6 +21,7 @@ import { PrometheumModule } from './prometheus/prometheum.module';
 import { QueueModule } from './queue/queue.module';
 import { Param } from './models/param.model';
 import { ParamModule } from './params/params.module';
+import { PromoCodeCategory } from './models/promocodeCategory.model';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { ParamModule } from './params/params.module';
       models: [
         Product, Order, User,
         Category, OrderItem, RefreshToken,
-        PromoCode, Param
+        PromoCode, Param, PromoCodeCategory,
       ],
       autoLoadModels: true,
       synchronize: true,

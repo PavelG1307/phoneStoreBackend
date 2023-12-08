@@ -4,12 +4,13 @@ import { PromoCode } from 'src/models/promocode.model';
 import { UserModule } from 'src/user/user.module';
 import { PromoCodeController } from './promocode.controller';
 import { PromoCodeService } from './promocode.service';
+import { PromoCodeCategory } from 'src/models/promocodeCategory.model';
 
 @Module({
     controllers: [PromoCodeController],
     providers: [PromoCodeService],
     imports: [
-        SequelizeModule.forFeature([PromoCode]),
+        SequelizeModule.forFeature([PromoCode, PromoCodeCategory]),
         UserModule
     ],
     exports: [

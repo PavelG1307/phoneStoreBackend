@@ -1,0 +1,17 @@
+scrape_configs:
+  - job_name: prometheus
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:3000']
+        labels:
+          service: 'app-exporter'
+          group: 'testing'
+          name: 'app-exporter'
+  - job_name: node
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:9100']
+        labels:
+          service: 'node-exporter'
+          group: 'default'
+          name: 'node-exporter'

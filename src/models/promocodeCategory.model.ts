@@ -5,16 +5,18 @@ import {
   DataType,
   UpdatedAt,
   CreatedAt,
-  HasMany,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript'
 import { UUID } from './types'
-import { PromoCodeCategory } from './promocodeCategory.model'
+import { PromoCode } from './promocode.model'
+import { Category } from './category.model'
 
 @Table({
-  modelName: 'PromoCode'
+  modelName: 'PromoCodeCategory'
 })
 
-export class PromoCode extends Model<PromoCode> {
+export class PromoCodeCategory extends Model<PromoCodeCategory> {
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
@@ -23,26 +25,23 @@ export class PromoCode extends Model<PromoCode> {
   })
   declare uuid?: UUID
 
+  @ForeignKey(() => Category)
   @Column({
-    type: DataType.TEXT
+    type: DataType.UUID,
   })
-  declare name: string
+  declare categoryUUID: UUID
 
+  @ForeignKey(() => PromoCode)
   @Column({
-    type: DataType.FLOAT
+    type: DataType.UUID
   })
-  declare discount: number
+  declare promoCodeUUID: UUID
 
-  @Column({
-    type: DataType.DATE
-  })
-  declare existsUp?: Date
+  @BelongsTo(() => PromoCode)
+  readonly promoCode: PromoCode;
 
-  @Column({ type: DataType.INTEGER })
-  declare quantity?: number
-
-  @Column({ type: DataType.BOOLEAN, defaultValue: false  })
-  declare isDisabled?: boolean
+  @BelongsTo(() => Category)
+  readonly category: Category;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   declare isDeleted?: boolean
@@ -54,7 +53,4 @@ export class PromoCode extends Model<PromoCode> {
   @Column({ type: DataType.DATE })
   @UpdatedAt
   declare updatedAt?: Date
-
-  @HasMany(() => PromoCodeCategory, 'promoCodeUUID')
-  promoCodeCategories: PromoCodeCategory[]
 }

@@ -8,6 +8,6 @@ export class CreateProductDto {
     images: string[]
     description: string
     visible: boolean
-    optionIds: number[]
+    optionsIds: number[]
     variants?: Variant[]
 }

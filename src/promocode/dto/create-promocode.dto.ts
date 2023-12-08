@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer"
-import { IsDate, IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
+import { IsArray, IsDate, IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
 
 export class CreatePromoCodeDto {
     @ApiProperty()
@@ -25,4 +25,9 @@ export class CreatePromoCodeDto {
     @IsOptional()
     @IsNumber()
     quantity?: number
+
+    @ApiProperty()
+    @IsOptional()
+    @IsArray()
+    categoryUuids?: string[]
 }

@@ -26,21 +26,21 @@ describe('ProductService', () => {
       description: 'Описание',
       visible: true,
       images: ['https://prodelo.biz/image/cache/catalog/attribute/tovar-1280x1280.jpeg'],
-      optionIds: [1, 2],
+      optionsIds: [1, 2],
       variants: [
         {
           id: 1,
-          optionIds: [1],
+          optionsIds: [1],
           isDefault: true,
-          optionInfo: {
+          optionsInfo: {
             price: 23999
           }
         },
         {
           id: 2,
-          optionIds: [2],
+          optionsIds: [2],
           isDefault: true,
-          optionInfo: {
+          optionsInfo: {
             price: 26734
           }
         }

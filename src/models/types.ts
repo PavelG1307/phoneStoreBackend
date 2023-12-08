@@ -16,6 +16,6 @@ export type OptionList = {
 export type Variant = {
     id: number,
     isDefault?: boolean,
-    optionIds: number[]
-    optionInfo: Partial<Product>
+    optionsIds: number[]
+    optionsInfo: Partial<Product>
   }
