@@ -22,7 +22,7 @@ export class Product extends Model<Product> {
     primaryKey: true,
     unique: true
   })
-  declare uuid?: UUID
+  declare uuid: UUID
 
   @Column({
     type: DataType.TEXT,
@@ -72,8 +72,13 @@ export class Product extends Model<Product> {
   declare releaseAt?: Date
 
   @Column({ type: DataType.INTEGER })
-  @CreatedAt
   declare sortValue?: number
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: true,
+  })
+  priceDependOnColor: boolean
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   declare isDeleted?: boolean
