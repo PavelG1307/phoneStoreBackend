@@ -27,7 +27,8 @@ export class ProductService {
   async getAll(filters: GetProductDto) {
     const { productUUIDs, categoryUUID, limit, offset, orderBy, order } = filters
     const where: WhereOptions<Product> = {
-      visible: true
+      visible: true,
+      isDeleted: false,
     }
     if (categoryUUID) {
       where.categoryUUID = categoryUUID
