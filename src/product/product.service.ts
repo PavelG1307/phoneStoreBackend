@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common"
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
 import { Op, WhereOptions } from "sequelize"
 import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING_PRODUCT } from "src/core/constants"
@@ -17,11 +17,11 @@ export class ProductService {
   ) {}
 
   async get(uuid: UUID) {
-    const products = await Product.findOne({ 
+    const product = await Product.findOne({ 
       where: { uuid },
       include: [Category]
     })
-    return products
+    return product
   }
 
   async getAll(filters: GetProductDto) {
@@ -72,6 +72,13 @@ export class ProductService {
     if (!uuid) {
       throw new BadRequestException('UUID - обязательный параметр')
     }
-    return Product.destroy({ where: { uuid } })
+
+    const product = await this.get(uuid)
+    if (!product) {
+      return new NotFoundException('Товар не найден')
+    }
+    product.isDeleted = true
+    await product.save()
+    return
   }
 }
