@@ -91,6 +91,20 @@ export class CategoryService {
       name: 'JBL',
       parentUUID: '8aeba603-a913-4577-903d-f7187c5e5abc'
     },
+    {
+      uuid: 'f1706b0f-9f43-429f-97fa-22e7d260076b',
+      name: 'Другое от apple',
+    },
+    {
+      uuid: '86d4a5f3-e602-473b-a8ea-4aeb127fe840',
+      name: 'Vision',
+      parentUUID: 'f1706b0f-9f43-429f-97fa-22e7d260076b'
+    },
+    {
+      uuid: '8cc594ef-d357-46b4-8b0a-8356c76effaf',
+      name: 'TV & Home',
+      parentUUID: 'f1706b0f-9f43-429f-97fa-22e7d260076b'
+    },
   ]
 
   async getAll() {
