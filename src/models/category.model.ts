@@ -27,7 +27,7 @@ export class Category extends Model<Category> {
   declare name: string
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
     allowNull: true,
   })
   declare slug?: string
