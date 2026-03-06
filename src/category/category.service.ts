@@ -113,6 +113,13 @@ export class CategoryService {
     })
   }
 
+  async getBySlug(slug: string) {
+    return this.categoryModel.findOne({
+      where: { slug, isDeleted: false },
+      attributes: ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'],
+    })
+  }
+
   async migrate() {
     
     const category = Category.bulkCreate(CategoryService.categories)

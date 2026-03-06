@@ -9,6 +9,7 @@ import { UserModule } from 'src/user/user.module';
 @Module({
     controllers: [CategoryController],
     providers: [CategoryService],
+    exports: [CategoryService],
     imports: [
         SequelizeModule.forFeature([Category]),
         UserModule,
