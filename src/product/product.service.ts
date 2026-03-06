@@ -16,7 +16,7 @@ export class ProductService {
     private readonly productModel: typeof Product
   ) {}
 
-  private static categoryAttributes = ['uuid', 'name', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'] as const
+  private static categoryAttributes = ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'] as const
 
   async get(uuid: UUID) {
     const product = await this.productModel.findOne({
