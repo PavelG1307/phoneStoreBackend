@@ -36,6 +36,7 @@ lerna-debug.log*
 node_modules
 
 .env.*
+dump.sql
 docker-compose.yml
 nginx.config
 docker-compose.*
