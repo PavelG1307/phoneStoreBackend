@@ -11,9 +11,13 @@ export class AdminService {
       throw new ServiceUnavailableException('Дамп уже выполняется.');
     }
 
-    const root = process.cwd();
+    // Путь к скрипту: из dist/admin/ поднимаемся в корень проекта (не зависим от process.cwd())
+    const projectRoot = path.join(__dirname, '..', '..');
+    const defaultScriptPath = path.join(projectRoot, 'scripts', 'dump-prod-to-dev.sh');
+    const scriptPath = process.env.DUMP_SCRIPT_PATH || defaultScriptPath;
+    const root = process.env.DUMP_CWD || projectRoot;
+
     this.dumpInProgress = true;
-    const scriptPath = path.join(root, 'scripts', 'dump-prod-to-dev.sh');
 
     return new Promise((resolve, reject) => {
       const child = spawn('bash', [scriptPath], {
