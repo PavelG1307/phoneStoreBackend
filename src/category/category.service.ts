@@ -55,8 +55,9 @@ export class CategoryService {
   ]
 
   async getAll() {
-    const products = Category.findAll()
-    return products
+    return this.categoryModel.findAll({
+      attributes: ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'],
+    })
   }
 
   async migrate() {
