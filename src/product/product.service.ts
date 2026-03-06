@@ -17,7 +17,7 @@ export class ProductService {
   ) {}
 
   async get(uuid: UUID) {
-    const product = await Product.findOne({ 
+    const product = await this.productModel.findOne({
       where: { uuid },
       include: [Category]
     })
@@ -37,7 +37,7 @@ export class ProductService {
     if (productUUIDs) where.uuid = {
       [Op.in]: productUUIDs
     }
-    const products = Product.findAll({
+    const products = this.productModel.findAll({
       where: { ...where },
       order: [[orderBy || DEFAULT_SORTING_PRODUCT.orderBy, order || DEFAULT_SORTING_PRODUCT.order], ['createdAt', 'DESC']],
       limit: Number(limit) || DEFAULT_LAZY_LOADING.limit,
@@ -49,7 +49,7 @@ export class ProductService {
 
   
   async create(product: CreateProductDto) {
-    const newProduct = await Product.create(product, {
+    const newProduct = await this.productModel.create(product, {
       returning: true
     })
     return newProduct
@@ -59,7 +59,7 @@ export class ProductService {
     if (!uuid) {
       throw new BadRequestException('UUID - обязательный параметр')
     }
-    const [count, updatedProduct] = await Product.update(product, {
+    const [count, updatedProduct] = await this.productModel.update(product, {
       where: { uuid },
       returning: true
     })
