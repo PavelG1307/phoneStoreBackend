@@ -31,7 +31,6 @@ export class OrderController {
   @Get()
   @ApiCookieAuth()
   @UseGuards(JwtAuthGuard)
-  @RollbarHandler({ rethrow: true })
 
   async getAll(@Query() query: GetOrderDto) {
     const params = {
