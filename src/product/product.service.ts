@@ -16,10 +16,12 @@ export class ProductService {
     private readonly productModel: typeof Product
   ) {}
 
+  private static categoryAttributes = ['uuid', 'name', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'] as const
+
   async get(uuid: UUID) {
     const product = await this.productModel.findOne({
       where: { uuid },
-      include: [Category]
+      include: [{ model: Category, attributes: [...ProductService.categoryAttributes] }]
     })
     return product
   }
@@ -42,7 +44,7 @@ export class ProductService {
       order: [[orderBy || DEFAULT_SORTING_PRODUCT.orderBy, order || DEFAULT_SORTING_PRODUCT.order], ['createdAt', 'DESC']],
       limit: Number(limit) || DEFAULT_LAZY_LOADING.limit,
       offset: Number(offset) || DEFAULT_LAZY_LOADING.offset,
-      include: [Category]
+      include: [{ model: Category, attributes: [...ProductService.categoryAttributes] }]
     })
     return products
   }
