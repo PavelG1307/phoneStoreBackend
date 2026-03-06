@@ -21,6 +21,7 @@ import { PrometheumModule } from './prometheus/prometheum.module';
 import { QueueModule } from './queue/queue.module';
 import { Param } from './models/param.model';
 import { ParamModule } from './params/params.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { ParamModule } from './params/params.module';
     PrometheumModule,
     QueueModule,
     ParamModule,
+    AdminModule,
   ]
 })
 export class AppModule {}
