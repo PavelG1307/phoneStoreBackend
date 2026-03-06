@@ -4,11 +4,23 @@ import { Product } from '../models/product.model';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
 
+const mockProductModel = {
+  findOne: jest.fn(),
+  findAll: jest.fn(),
+  create: jest.fn(),
+  update: jest.fn(),
+};
+
 describe('ProductService', () => {
   let service: ProductService;
+
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductService, { provide: getModelToken(Product), useValue: jest.fn() }],
+      providers: [
+        ProductService,
+        { provide: getModelToken(Product), useValue: mockProductModel },
+      ],
     }).compile();
     service = module.get<ProductService>(ProductService);
   });
@@ -45,11 +57,14 @@ describe('ProductService', () => {
           }
         }
       ]
-    }
-    const newProduct = await service.create(TEST_PRODUCT)
-    expect(newProduct).toHaveProperty('name')
-    expect(newProduct).toBe(TEST_PRODUCT.name)
-    expect(newProduct).toHaveProperty('price')
-    expect(newProduct).toBe(TEST_PRODUCT.price)
-  })
+    };
+    const created = { ...TEST_PRODUCT, uuid: 'created-uuid' };
+    mockProductModel.create.mockResolvedValue(created);
+
+    const newProduct = await service.create(TEST_PRODUCT);
+
+    expect(mockProductModel.create).toHaveBeenCalledWith(TEST_PRODUCT, { returning: true });
+    expect(newProduct).toHaveProperty('name', TEST_PRODUCT.name);
+    expect(newProduct).toHaveProperty('price', TEST_PRODUCT.price);
+  });
 });
