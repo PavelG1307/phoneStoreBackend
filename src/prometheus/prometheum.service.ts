@@ -10,7 +10,8 @@ export class PrometheumService {
     private static categoriesNames = CategoryService.categories.map(category => category.name)
 
     private static PromCounterStatusCodes = new Map<number, number>;
-    private static PromCounterErrors = 0;
+    private static PromCounterNotifications = new Map<string, number>;
+    private static PromCounterOrders = 0;
 
     public static activeUsersPerCategoryMetric(registry) {
         const gaugeUsers = new client.Gauge({
@@ -28,9 +29,22 @@ export class PrometheumService {
           registers: [registry],
           labelNames: [
               'statusCode',
-              'error'
           ],
-      });
+        });
+
+        const gaugeOrders = new client.Gauge({
+            name: 'orders',
+            help: 'Amount of orders',
+            registers: [registry],
+            labelNames: [],
+        });
+
+        const gaugeNotification = new client.Gauge({
+            name: 'notifications',
+            help: 'Amount of notifications',
+            registers: [registry],
+            labelNames: [ 'type' ],
+        });
 
         async function collectActiveUsers() {
             for (const category of PrometheumService.categoriesNames){
@@ -46,10 +60,16 @@ export class PrometheumService {
               gaugeRequest.set({ statusCode }, value);
             }
 
-            gaugeRequest.set({ error: 'error' }, PrometheumService.PromCounterErrors);
-          }
+            for (const type of PrometheumService.PromCounterNotifications.keys()){
+                const value = PrometheumService.PromCounterNotifications.get(type)
+                gaugeNotification.set({ type }, value);
+            }
+
+            gaugeOrders.set({ }, PrometheumService.PromCounterOrders);
+
+        }
           
-          setInterval(collectActiveUsers, 5000);
+        setInterval(collectActiveUsers, 5000);
     }
 
     public static incUsersPerCategoryMetric(categoryUuid: string) {
@@ -69,10 +89,18 @@ export class PrometheumService {
       }
       const prevValue = PrometheumService.PromCounterStatusCodes.get(statusCode)
       PrometheumService.PromCounterStatusCodes.set(statusCode, prevValue + 1)
-      
-  }
+    }
 
-  public static incErrorMetric() {
-    PrometheumService.PromCounterErrors++
-  }
+    public static incNotificationMetric(type: string) {
+        if (!PrometheumService.PromCounterNotifications.has(type)) {
+            PrometheumService.PromCounterNotifications.set(type, 1)
+            return
+        }
+        const prevValue = PrometheumService.PromCounterNotifications.get(type)
+        PrometheumService.PromCounterNotifications.set(type, prevValue + 1)
+    }
+
+    public static incOrderMetric() {
+        PrometheumService.PromCounterOrders++
+    }
 }

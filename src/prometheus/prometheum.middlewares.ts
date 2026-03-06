@@ -6,16 +6,13 @@ export function PrometheumMiddleware(
     res: Response,
     next: NextFunction
   ) {
-    if (req.path != '/metrics') {
+    if (req.path.includes('metrics')) {
         next()
         return
     }
 
     res.on('finish', () => {
         PrometheumService.incStatusCodeMetric(res.statusCode)
-        if (res.statusCode !== 200) {
-            PrometheumService.incErrorMetric()
-        }
     })
     next()
   }

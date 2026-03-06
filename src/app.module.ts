@@ -18,6 +18,9 @@ import { StorageModule } from './storage/storage.module';
 import { PromoCode } from './models/promocode.model';
 import { PromoCodeModule } from './promocode/promocode.module';
 import { PrometheumModule } from './prometheus/prometheum.module';
+import { QueueModule } from './queue/queue.module';
+import { Param } from './models/param.model';
+import { ParamModule } from './params/params.module';
 
 @Module({
   imports: [
@@ -34,7 +37,7 @@ import { PrometheumModule } from './prometheus/prometheum.module';
       models: [
         Product, Order, User,
         Category, OrderItem, RefreshToken,
-        PromoCode,
+        PromoCode, Param
       ],
       autoLoadModels: true,
       synchronize: true,
@@ -52,6 +55,8 @@ import { PrometheumModule } from './prometheus/prometheum.module';
     StorageModule,
     PromoCodeModule,
     PrometheumModule,
+    QueueModule,
+    ParamModule,
   ]
 })
 export class AppModule {}

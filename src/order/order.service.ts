@@ -9,17 +9,22 @@ import { PromoCode } from "src/models/promocode.model"
 import { PromoCodeService } from "src/promocode/promocode.service"
 import { GetOrderDto } from "./dto/get-order.dto"
 
+import { NotificationService } from "src/notification/notification.service"
+import { PrometheumService } from "src/prometheus/prometheum.service"
+
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order)
     private readonly OrderModel: typeof Order,
-    private readonly promoCodeService: PromoCodeService
+    private readonly promoCodeService: PromoCodeService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async get(uuid: UUID) {
     const order = await Order.findOne({ 
       where: { uuid },
+
       include: [OrderItem, PromoCode],
     })
 
@@ -38,14 +43,20 @@ export class OrderService {
     const orders = await Order.findAll({ 
       include: [OrderItem, PromoCode],
       order: [[orderBy, order]],
+
       limit: Number(limit),
       offset: Number(offset),
     })
     
-    return orders.map(order => {
+    const formattedOrders = orders.map(order => {
       const costs = this.getOrderCosts(order)
       return this.formatOrder(order, costs)
     })
+
+    if (orderBy === 'cost') {
+      return formattedOrders.sort((a,b) => (a.costs.cost - b.costs.cost) * (order === 'DESC' ? -1 : 1))
+    }
+    return formattedOrders
   }
 
   async getStatistics(opts: {
@@ -164,6 +175,16 @@ export class OrderService {
       
       trx.commit()
 
+      PrometheumService.incOrderMetric()
+      try {
+        this.notificationService.notify(
+          NotificationService.NotificationTypes.CREATED_ORDER.id,
+          newOrder,
+        )
+      } catch (e) {
+        console.error(e)
+      }
+
       return this.get(newOrder.uuid)
     } catch (error) {
       trx.rollback()
@@ -174,17 +195,14 @@ export class OrderService {
   async update(uuid: string, order: Partial<Order>) {
     return Order.update(order, {
       where: {
-        uuid
+        uuid,
+        deletedAt: null
       }
     })
   }
 
   async delete(uuid: string) {
-    const success =  await Order.destroy({
-      where: {
-        uuid
-      }
-    })
+    const success = await Order.update({ deletedAt: new Date() }, { where: { uuid } })
     if (!success) throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
     return
   }
@@ -200,9 +218,11 @@ export class OrderService {
   
     let costWithoutDiscount: number
   
-    if (order.promoCode && order.promoCode.discount > 0 && order.promoCode.discount < 100) {
+    if (order.promoCode && order.promoCode.discount > 0) {
       costWithoutDiscount = cost
-      cost  = Math.round(cost * (100 - order.promoCode.discount) / 100)
+      cost = cost > order.promoCode.discount
+        ? cost - order.promoCode.discount
+        : 0;
     }
 
     return { cost, costWithoutDiscount }

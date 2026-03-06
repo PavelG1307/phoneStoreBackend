@@ -7,12 +7,24 @@ import {
 
 export const initSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
-    .setTitle('Universal shop')
+    .setTitle('RK Tech API')
     .setVersion('1.0.0')
-    .setDescription('Description that')
-    .addTag('Universal shop')
+    .setDescription('Тут могло быть описание, но мне лень')
+    .addTag('Auth')
+    .addTag('Product')
+    .addTag('Order')
+    .addTag('User')
+    .addTag('Metric')
+    .addTag('Category')
+    .addTag('Promocode')
+    .addTag('Storage')
+    .addCookieAuth('_jwt1')
     .build()
 
+    // const options = new DocumentBuilder().addSecurity('basic', {
+    //   type: 'http',
+    //   scheme: 'basic',
+    // });
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (_, methodKey) => methodKey,
   }

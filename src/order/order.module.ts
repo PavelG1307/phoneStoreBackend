@@ -8,6 +8,8 @@ import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 import { PromoCode } from 'src/models/promocode.model';
 import { PromoCodeModule } from 'src/promocode/promocode.module';
+import { QueueModule } from 'src/queue/queue.module';
+import { NotificaionModule } from 'src/notification/notification.module';
 
 @Module({
     controllers: [OrderController],
@@ -15,6 +17,7 @@ import { PromoCodeModule } from 'src/promocode/promocode.module';
     imports: [
         SequelizeModule.forFeature([Product, Order, OrderItem, PromoCode]),
         UserModule,
-        PromoCodeModule
+        PromoCodeModule,
+        NotificaionModule
     ]})
 export class OrderModule {}

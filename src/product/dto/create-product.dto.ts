@@ -1,4 +1,4 @@
-import { UUID, Variant } from "../../models/types"
+import { UUID } from "../../models/types"
 
 export class CreateProductDto {
     name: string
@@ -10,4 +10,20 @@ export class CreateProductDto {
     visible: boolean
     optionIds: number[]
     variants?: Variant[]
+    priceDependOnColor?: boolean
+}
+
+class Variant {
+    id: number
+    isDefault?: boolean
+    optionIds: number[]
+    optionInfo: VariantOptionInfo
+}
+
+class VariantOptionInfo {
+    name?: string
+    price?: number
+    priceOld?: number
+    images?: string[]
+    description?: string
 }
