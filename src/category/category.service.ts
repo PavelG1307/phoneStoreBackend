@@ -109,7 +109,7 @@ export class CategoryService {
 
   async getAll() {
     return this.categoryModel.findAll({
-      attributes: ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'],
+      attributes: ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt'],
     })
   }
 
