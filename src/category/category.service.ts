@@ -109,14 +109,7 @@ export class CategoryService {
 
   async getAll() {
     return this.categoryModel.findAll({
-      attributes: ['uuid', 'name', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt', 'slug'],
-    })
-  }
-
-  async getBySlug(slug: string) {
-    return this.categoryModel.findOne({
-      where: { slug, isDeleted: false },
-      attributes: ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'],
+      attributes: ['uuid', 'name', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'],
     })
   }
 
