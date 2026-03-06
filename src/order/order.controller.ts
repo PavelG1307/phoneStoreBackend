@@ -5,6 +5,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { GetStatisticsDto } from './dto/get-statistics.dto';
 import { OrderService } from './order.service';
 import { GetOrderDto } from './dto/get-order.dto';
+
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Order')
@@ -30,6 +31,8 @@ export class OrderController {
   @Get()
   @ApiCookieAuth()
   @UseGuards(JwtAuthGuard)
+  @RollbarHandler({ rethrow: true })
+
   async getAll(@Query() query: GetOrderDto) {
     const params = {
       order: query.order || 'DESC',

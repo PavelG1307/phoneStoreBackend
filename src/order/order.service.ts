@@ -8,6 +8,7 @@ import { CreateOrderDto } from "./dto/create-order.dto"
 import { PromoCode } from "src/models/promocode.model"
 import { PromoCodeService } from "src/promocode/promocode.service"
 import { GetOrderDto } from "./dto/get-order.dto"
+
 import { NotificationService } from "src/notification/notification.service"
 import { PrometheumService } from "src/prometheus/prometheum.service"
 
@@ -22,7 +23,8 @@ export class OrderService {
 
   async get(uuid: UUID) {
     const order = await Order.findOne({ 
-      where: { uuid, deletedAt: null },
+      where: { uuid },
+
       include: [OrderItem, PromoCode],
     })
 
@@ -37,11 +39,11 @@ export class OrderService {
 
   async getAll(params: GetOrderDto) {
     const { limit, offset, orderBy, order } = params
-
+    
     const orders = await Order.findAll({ 
-      where: { deletedAt: null },
       include: [OrderItem, PromoCode],
-      order: [[orderBy == 'cost' ? 'createdAt' : orderBy, order]],
+      order: [[orderBy, order]],
+
       limit: Number(limit),
       offset: Number(offset),
     })

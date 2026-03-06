@@ -27,6 +27,12 @@ export class Category extends Model<Category> {
   declare name: string
 
   @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  declare slug: string
+
+  @Column({
     type: DataType.UUID,
   })
   declare parentUUID?: UUID
