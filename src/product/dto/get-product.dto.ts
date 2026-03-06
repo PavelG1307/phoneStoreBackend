@@ -22,6 +22,10 @@ export class GetProductDto {
   readonly categoryUUID?: UUID
 
   @IsOptional()
+  @IsString()
+  readonly categorySlug?: string
+
+  @IsOptional()
   @Transform((params) => {
     try {
       return params.value.split(',')
