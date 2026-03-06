@@ -30,7 +30,7 @@ export class Category extends Model<Category> {
     type: DataType.TEXT,
     allowNull: true,
   })
-  declare slug?: string
+  declare slug: string
 
   @Column({
     type: DataType.UUID,
