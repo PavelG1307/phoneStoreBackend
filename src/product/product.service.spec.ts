@@ -1,6 +1,5 @@
 import { getModelToken } from '@nestjs/sequelize';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoryService } from 'src/category/category.service';
 import { Product } from '../models/product.model';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
@@ -12,10 +11,6 @@ const mockProductModel = {
   update: jest.fn(),
 };
 
-const mockCategoryService = {
-  getBySlug: jest.fn(),
-};
-
 describe('ProductService', () => {
   let service: ProductService;
 
@@ -25,7 +20,6 @@ describe('ProductService', () => {
       providers: [
         ProductService,
         { provide: getModelToken(Product), useValue: mockProductModel },
-        { provide: CategoryService, useValue: mockCategoryService },
       ],
     }).compile();
     service = module.get<ProductService>(ProductService);

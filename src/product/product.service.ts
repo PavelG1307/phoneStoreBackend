@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
 import { InjectModel } from "@nestjs/sequelize"
 import { Op, WhereOptions } from "sequelize"
-import { CategoryService } from "src/category/category.service"
 import { DEFAULT_LAZY_LOADING, DEFAULT_SORTING_PRODUCT } from "src/core/constants"
 import { Category } from "src/models/category.model"
 import { Product } from "../models/product.model"
@@ -14,11 +13,10 @@ import { PrometheumService } from "src/prometheus/prometheum.service"
 export class ProductService {
   constructor(
     @InjectModel(Product)
-    private readonly productModel: typeof Product,
-    private readonly categoryService: CategoryService
+    private readonly productModel: typeof Product
   ) {}
 
-  private static categoryAttributes = ['uuid', 'name', 'slug', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'] as const
+  private static categoryAttributes = ['uuid', 'name', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'] as const
 
   async get(uuid: UUID) {
     const product = await this.productModel.findOne({
@@ -29,17 +27,12 @@ export class ProductService {
   }
 
   async getAll(filters: GetProductDto) {
-    const { productUUIDs, categoryUUID, categorySlug, limit, offset, orderBy, order } = filters
+    const { productUUIDs, categoryUUID, limit, offset, orderBy, order } = filters
     const where: WhereOptions<Product> = {
       visible: true,
       isDeleted: false,
     }
-    if (categorySlug) {
-      const category = await this.categoryService.getBySlug(categorySlug)
-      if (!category) return []
-      where.categoryUUID = category.uuid
-      PrometheumService.incUsersPerCategoryMetric(category.uuid)
-    } else if (categoryUUID) {
+    if (categoryUUID) {
       where.categoryUUID = categoryUUID
       PrometheumService.incUsersPerCategoryMetric(categoryUUID)
     }
