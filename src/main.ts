@@ -6,12 +6,14 @@ import { AppModule } from './app.module'
 import { corsOptions } from './core/config/cors'
 import { initSwagger } from './core/lib/swagger'
 import { EXIT_CODES } from './core/constants'
-import * as cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser'
 import { PrometheumMiddleware } from './prometheus/prometheum.middlewares'
+import { HttpExceptionFilter } from './core/filters/http-exception.filter'
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule)
+    app.useGlobalFilters(new HttpExceptionFilter())
     app.useGlobalPipes(
       new ValidationPipe({
         forbidUnknownValues: false
