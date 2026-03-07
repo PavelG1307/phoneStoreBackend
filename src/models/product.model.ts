@@ -29,6 +29,12 @@ export class Product extends Model<Product> {
   })
   declare name: string
 
+  @Column({
+    type: DataType.TEXT,
+    unique: true,
+  })
+  declare slug: string
+
   @Column({ type: DataType.INTEGER })
   declare price: number
 
