@@ -64,7 +64,19 @@ describe('ProductService', () => {
     const newProduct = await service.create(TEST_PRODUCT);
 
     expect(mockProductModel.create).toHaveBeenCalledWith(
-      { ...TEST_PRODUCT, slug: 'testovyj-tovar' },
+      {
+        name: TEST_PRODUCT.name,
+        price: TEST_PRODUCT.price,
+        priceOld: TEST_PRODUCT.priceOld,
+        categoryUUID: TEST_PRODUCT.categoryUUID,
+        images: TEST_PRODUCT.images,
+        description: TEST_PRODUCT.description,
+        visible: TEST_PRODUCT.visible,
+        options: [],
+        variants: TEST_PRODUCT.variants,
+        priceDependOnColor: true,
+        slug: 'testovyj-tovar',
+      },
       { returning: true },
     );
     expect(newProduct).toHaveProperty('name', TEST_PRODUCT.name);

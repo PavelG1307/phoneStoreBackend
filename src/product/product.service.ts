@@ -84,10 +84,30 @@ export class ProductService {
   
   async create(product: CreateProductDto) {
     const slug = await this.ensureUniqueSlug(this.slugify(product.name))
-    const newProduct = await this.productModel.create(
-      { ...product, slug },
-      { returning: true }
-    )
+    const createData = {
+      name: product.name,
+      price: product.price,
+      priceOld: product.priceOld ?? 0,
+      categoryUUID: product.categoryUUID,
+      images: product.images ?? [],
+      description: product.description ?? '',
+      visible: product.visible ?? true,
+      options: (product as Partial<Product>).options ?? [],
+      variants: product.variants ?? [],
+      priceDependOnColor: product.priceDependOnColor ?? true,
+      slug,
+    }
+    const newProduct = await this.productModel.create(createData, {
+      returning: true,
+    })
+    const slugValue = typeof newProduct.get === 'function' ? newProduct.get('slug') : (newProduct as any).slug
+    if (slugValue == null) {
+      if (typeof newProduct.set === 'function') {
+        newProduct.set('slug', slug)
+      } else {
+        (newProduct as any).slug = slug
+      }
+    }
     return newProduct
   }
 
