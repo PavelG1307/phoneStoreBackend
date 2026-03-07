@@ -12,10 +12,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductController {
   constructor(private readonly ProductService: ProductService) { }
 
-  @Get(':uuid')
-  @ApiParam({ name: 'uuid', description: 'UUID товара', format: "uuid", type: "string" })
-  async get(@Param('uuid') uuid: string): Promise<GetProductsResponseItemDto> {
-    return this.ProductService.get(uuid)
+  @Get(':id')
+  @ApiParam({ name: 'id', description: 'UUID товара или slug (латиница через дефис)' })
+  async get(@Param('id') id: string): Promise<GetProductsResponseItemDto> {
+    return this.ProductService.get(id)
   }
 
   @Get()

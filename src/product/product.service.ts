@@ -50,9 +50,13 @@ export class ProductService {
     }
   }
 
-  async get(uuid: UUID) {
+  private static readonly UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+  async get(identifier: string) {
+    const isUuid = ProductService.UUID_REGEX.test(identifier)
+    const where = isUuid ? { uuid: identifier } : { slug: identifier }
     const product = await this.productModel.findOne({
-      where: { uuid },
+      where,
       include: [{ model: Category, attributes: [...ProductService.categoryAttributes] }]
     })
     return product
