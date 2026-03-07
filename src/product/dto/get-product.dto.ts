@@ -37,6 +37,7 @@ export class GetProductDto {
 export class GetProductsResponseItemDto {
   uuid: string
   name: string
+  slug: string
   price: number
   priceOld?: number
   categoryUUID: UUID

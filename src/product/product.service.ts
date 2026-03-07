@@ -18,6 +18,38 @@ export class ProductService {
 
   private static categoryAttributes = ['uuid', 'name', 'parentUUID', 'isDeleted', 'createdAt', 'updatedAt'] as const
 
+  private static readonly CYRILLIC_TO_LATIN: Record<string, string> = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z',
+    'и': 'i', 'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r',
+    'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
+    'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
+  }
+
+  /**
+   * Генерирует URL-слаг из имени: кириллица в латиницу, нижний регистр, пробелы и спецсимволы — в дефисы.
+   */
+  private slugify(name: string): string {
+    const lower = name.trim().toLowerCase()
+    const transliterated = lower.split('').map((char) => {
+      return ProductService.CYRILLIC_TO_LATIN[char] ?? char
+    }).join('')
+    const slug = transliterated
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    return slug || 'product'
+  }
+
+  private async ensureUniqueSlug(baseSlug: string): Promise<string> {
+    let slug = baseSlug
+    let counter = 0
+    while (true) {
+      const existing = await this.productModel.findOne({ where: { slug } })
+      if (!existing) return slug
+      counter += 1
+      slug = `${baseSlug}-${counter}`
+    }
+  }
+
   async get(uuid: UUID) {
     const product = await this.productModel.findOne({
       where: { uuid },
@@ -51,9 +83,11 @@ export class ProductService {
 
   
   async create(product: CreateProductDto) {
-    const newProduct = await this.productModel.create(product, {
-      returning: true
-    })
+    const slug = await this.ensureUniqueSlug(this.slugify(product.name))
+    const newProduct = await this.productModel.create(
+      { ...product, slug },
+      { returning: true }
+    )
     return newProduct
   }
 
