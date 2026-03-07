@@ -17,4 +17,9 @@ export class AdminController {
   async dumpProdToDev() {
     return this.adminService.dumpProdToDev();
   }
+
+  @Post('products/backfill-slugs')
+  async backfillProductSlugs() {
+    return this.adminService.backfillProductSlugs();
+  }
 }

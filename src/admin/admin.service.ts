@@ -1,9 +1,12 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { spawn } from 'child_process';
 import * as path from 'path';
+import { ProductService } from 'src/product/product.service';
 
 @Injectable()
 export class AdminService {
+  constructor(private readonly productService: ProductService) {}
+
   private dumpInProgress = false;
 
   async dumpProdToDev(): Promise<{ ok: boolean; message: string; stdout?: string; stderr?: string }> {
@@ -50,5 +53,9 @@ export class AdminService {
         reject(new ServiceUnavailableException(`Запуск скрипта: ${err.message}`));
       });
     });
+  }
+
+  async backfillProductSlugs(): Promise<{ updated: number }> {
+    return this.productService.backfillSlugs();
   }
 }
