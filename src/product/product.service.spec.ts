@@ -63,7 +63,10 @@ describe('ProductService', () => {
 
     const newProduct = await service.create(TEST_PRODUCT);
 
-    expect(mockProductModel.create).toHaveBeenCalledWith(TEST_PRODUCT, { returning: true });
+    expect(mockProductModel.create).toHaveBeenCalledWith(
+      { ...TEST_PRODUCT, slug: 'testovyj-tovar' },
+      { returning: true },
+    );
     expect(newProduct).toHaveProperty('name', TEST_PRODUCT.name);
     expect(newProduct).toHaveProperty('price', TEST_PRODUCT.price);
   });
