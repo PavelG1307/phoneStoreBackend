@@ -111,6 +111,24 @@ export class ProductService {
     return newProduct
   }
 
+  /**
+   * Заполняет slug у всех товаров, у которых он пустой. Для админки / миграции.
+   */
+  async backfillSlugs(): Promise<{ updated: number }> {
+    const products = await this.productModel.findAll({
+      where: { [Op.or]: [{ slug: null }, { slug: '' }] },
+    })
+    let updated = 0
+    for (const product of products) {
+      const name = product.get('name') as string
+      if (!name?.trim()) continue
+      const slug = await this.ensureUniqueSlug(this.slugify(name))
+      await product.update({ slug })
+      updated += 1
+    }
+    return { updated }
+  }
+
   async update(uuid: string, product: Partial<Product>) {
     if (!uuid) {
       throw new BadRequestException('UUID - обязательный параметр')
