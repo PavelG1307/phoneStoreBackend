@@ -187,7 +187,7 @@ def getMessageHtml(order: Order):
     delivery_message = escapeHtml(order.deliveryMessage if order.deliveryMessage else '-')
     order_uuid = escapeHtml(order.uuid)
 
-    admin_url = 'https://rk-tech.shop/admin'
+    admin_url = 'https://рк-тек.рф/admin'
 
     return f"""\
 <!doctype html>
@@ -209,7 +209,7 @@ def getMessageHtml(order: Order):
           <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(17,24,39,0.08);">
             <tr>
               <td style="padding:20px 24px;background:linear-gradient(135deg,#111827,#1f2937);color:#ffffff;">
-                <div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;">PhoneStore</div>
+                <div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;">РК-ТЕК</div>
                 <div style="font-size:22px;font-weight:800;margin-top:6px;">Новый заказ</div>
                 <div style="font-size:13px;opacity:.9;margin-top:6px;">UUID: {order_uuid}</div>
               </td>
