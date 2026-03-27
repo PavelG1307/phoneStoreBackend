@@ -1,10 +1,12 @@
 import time
+import smtplib
 from pyrogram import Client
 from config import Config
 from constants import BOT_NAME
 from logger import Logger
 from models import Order, Param, ParamTypes, OrderItem
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from email.message import EmailMessage
 
 countNotifications = 0
 
@@ -32,20 +34,22 @@ def start(config: Config, logger: Logger):
 
 
 def doPerformJob(config: Config, logger: Logger):
-    tgChatParam = Param.select().where(Param.id == ParamTypes.TG_CHAT_ID).get()
+    emailToParam = Param.select().where(Param.id == ParamTypes.EMAIL_TO).get()
     orders = Order.select().where(Order.isNotified == False)
     count = 0
 
     if len(orders) == 0:
         return count
-    
-    app = configureBotApp(config)
-    app.start()
+
+    recipients = parseRecipients(emailToParam.value)
+    if len(recipients) == 0:
+        raise Exception('EMAIL_TO is empty (Params.id=3)')
 
     for order in orders:
         try:
-            message = getMessageText(order)
-            sendNotification(app, int(tgChatParam.value), message)
+            subject = getSubject(order)
+            body = getMessageText(order)
+            sendEmailNotification(config, recipients, subject, body)
             order.isNotified = True
             order.save()
             count += 1
@@ -54,7 +58,6 @@ def doPerformJob(config: Config, logger: Logger):
             continue
         time.sleep(1)
 
-    app.stop()
     return count
 
 def sendNotification(app: Client, tgChatId: int, message: str):
@@ -62,6 +65,44 @@ def sendNotification(app: Client, tgChatId: int, message: str):
     button = InlineKeyboardButton(url=url, text='Открыть личный кабинет')
     markup = InlineKeyboardMarkup([[button]])
     app.send_message(tgChatId, message, reply_markup=markup)
+
+def sendEmailNotification(config: Config, to_email: str, subject: str, body: str):
+    if config.smtp_ssl:
+        server = smtplib.SMTP_SSL(config.smtp_host, config.smtp_port, timeout=30)
+    else:
+        server = smtplib.SMTP(config.smtp_host, config.smtp_port, timeout=30)
+
+    try:
+        if config.smtp_tls and not config.smtp_ssl:
+            server.starttls()
+        if config.smtp_user and config.smtp_password:
+            server.login(config.smtp_user, config.smtp_password)
+        for recipient in to_email:
+            msg = EmailMessage()
+            msg["From"] = config.smtp_from
+            msg["To"] = recipient
+            msg["Subject"] = subject
+            msg.set_content(body)
+            server.send_message(msg)
+    finally:
+        try:
+            server.quit()
+        except Exception:
+            pass
+
+def parseRecipients(raw: str):
+    if not raw:
+        return []
+    parts = raw.replace(';', ',').split(',')
+    recipients = []
+    for p in parts:
+        email = p.strip()
+        if email:
+            recipients.append(email)
+    return recipients
+
+def getSubject(order: Order):
+    return f'Новый заказ {order.uuid}'
 
 def getMessageText(order: Order):
     orderItems = OrderItem.select().where(OrderItem.orderUUID == order.uuid)
@@ -84,7 +125,7 @@ def getMessageText(order: Order):
     deliveryType = getDeliveryType(order.delivery)
     paymentType = getPaymentType(order.paymentTypeId)
 
-    return '**Новый заказ!**\n' + \
+    return 'Новый заказ!\n' + \
         f'ФИО: {order.fullName}\n' + \
         f'Номер телефона: {order.phoneNumber}\n' + \
         f'Email: {email}\n\n' + \
