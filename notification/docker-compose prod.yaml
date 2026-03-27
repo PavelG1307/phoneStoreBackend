@@ -1,0 +1,121 @@
+version: "3.5"
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 phonestorefront
+
+  backend:
+    container_name: phonestorebackend
+    image: pavelg1307/phonestore
+    build:
+        context: .
+        target: production
+        dockerfile: ./Dockerfile
+    environment:
+      TZ: "Europe/Moscow"
+      PORT: 3000
+      API_PREFIX: '/api/v1'
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: terris
+      DB_PASSWORD: CBnhTod6
+      DB_NAME: store
+      SECRET_JWT_KEY: DKSJjKHDSJkajkDSbjkdaw
+      SECRET_REFRESH_JWT_KEY: ASjhdJKSAHDjkaSjakSjhkADSk
+      FRONT_URL: '*'
+      NODE_ENV: prod
+      ROLLBAR_TOKEN: 69e77124a6384afdad4941e6274760f9
+    ports:
+        - "3000:3000"
+    networks:
+      - store-external
+    volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  frontend:
+    image: pavelg1307/phonestorefront
+    container_name: phonestorefront
+    restart: unless-stopped
+    environment:
+      URL: "https://rk-tech.shop/api/v1"
+    ports:
+      - "8000:3000"
+    networks:
+      - default
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:15.1
+    container_name: postgres
+    restart: always
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=terris
+      - POSTGRES_PASSWORD=CBnhTod6
+      - POSTGRES_DB=store
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - store-external
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+  
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    hostname: rabbitmq
+    restart: always
+    environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=&9W38rQdbL
+        - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+    ports:
+      - 2003:15672
+      - 2004:5672
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    networks:
+      - store-alpha-external
+
+  bot:
+    image: pavelg1307/store-bot
+    restart: unless-stopped
+    build:
+        context: .
+        target: production
+        dockerfile: ./Dockerfile
+    environment:
+      BOT_TOKEN: '6596529226:AAG_UXu-f1f0fCwvb9xZVH109TrzZ6-5i68'
+      BOT_API_ID: 20504717
+      BOT_API_HASH: '47aca7ceb040be30f454706095ae217e'
+
+      RABBITMQ_HOST: 81.177.140.3
+      RABBITMQ_PORT: 2004
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: '&9W38rQdbL'
+      RABBITMQ_QUEUE_PREFIX: store
+      NODE_ENV: prod
+      ROLLBAR_TOKEN: 69e77124a6384afdad4941e6274760f9
+      LOGGER_LEVEL: error
+      VERSION: 1.0.0
+    networks:
+      - store-external-external
+
+networks:
+  store-external:
+    name: store-external
+
+volumes:
+  postgres-vol:
