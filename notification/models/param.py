@@ -13,3 +13,4 @@ class Param(BaseModel):
 class ParamTypes:
     TG_CHAT_ID = 1
     POPUP_MESSAGE = 2
+    EMAIL_TO = 3

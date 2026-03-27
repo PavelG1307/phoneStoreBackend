@@ -20,6 +20,13 @@ class Config:
     db_password: str
     db_name: str
     timeout: int
+    smtp_host: str
+    smtp_port: int
+    smtp_user: str
+    smtp_password: str
+    smtp_from: str
+    smtp_tls: bool
+    smtp_ssl: bool
 
     def __init__(self, is_first_time=True):
         self.bot_token = self.getFromEnv('BOT_TOKEN')
@@ -37,6 +44,14 @@ class Config:
         self.db_name = self.getFromEnv('DB_NAME')
         self.timeout = int(self.getOrDefaultFromEnv('TIMEOUT', '300'))
 
+        self.smtp_host = self.getFromEnv('SMTP_HOST')
+        self.smtp_port = int(self.getOrDefaultFromEnv('SMTP_PORT', '587'))
+        self.smtp_user = self.getFromEnv('SMTP_USER')
+        self.smtp_password = self.getFromEnv('SMTP_PASSWORD')
+        self.smtp_from = self.getOrDefaultFromEnv('SMTP_FROM', self.smtp_user)
+        self.smtp_tls = self.getOrDefaultFromEnv('SMTP_TLS', 'true').lower() == 'true'
+        self.smtp_ssl = self.getOrDefaultFromEnv('SMTP_SSL', 'false').lower() == 'true'
+
         if (is_first_time):
             config = {
                 'bot_token': self.bot_token,
@@ -53,6 +68,12 @@ class Config:
                 'db_password': self.db_password,
                 'db_name': self.db_name,
                 'timeout': self.timeout,
+                'smtp_host': self.smtp_host,
+                'smtp_port': self.smtp_port,
+                'smtp_user': self.smtp_user,
+                'smtp_from': self.smtp_from,
+                'smtp_tls': self.smtp_tls,
+                'smtp_ssl': self.smtp_ssl,
             }
             print(config)
 
